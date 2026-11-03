@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s3-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--vy-accent); overflow: hidden; }
+        #s3-wrap { position: relative; }
+        .s3-word { font-family: var(--vy-font-display), sans-serif; font-size: 30cqmin; line-height: 0.85; text-transform: uppercase; display: block; }
+        #s3-fill { color: var(--vy-bg); }
+        #s3-echo { position: absolute; left: 0; top: 0; color: transparent; -webkit-text-stroke: 0.35cqmin var(--vy-bg); }
+        #s3-sub { position: absolute; left: 0; right: 0; bottom: -7cqmin; text-align: center; font-weight: 800; font-size: 3.2cqmin; letter-spacing: 0.35em; text-transform: uppercase; color: var(--vy-bg); }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1920" data-height="1080">
+        <div id="s3-wrap">
+          <span class="s3-word" id="s3-echo">Motion</span>
+          <span class="s3-word" id="s3-fill">Motion</span>
+          <span id="s3-sub">made by VYBE</span>
+        </div>
+      </div>
+      <script>
+        // Final word: revealed from the centre outward, an outline echo trails it, then it holds.
+        const BEAT = 0.5;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s3-fill", { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(0 0% 0 0%)", duration: 0.45, ease: "expo.out" }, 0.05);
+        tl.fromTo("#s3-echo", { x: 0, y: 0, opacity: 0 }, { x: 28, y: 22, opacity: 1, duration: 0.6, ease: "power3.out" }, BEAT);
+        tl.fromTo("#s3-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, BEAT * 2);
+        tl.fromTo("#s3-wrap", { scale: 1 }, { scale: 1.05, duration: 3.4, ease: "sine.out" }, 0);
+        window.__timelines["s3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

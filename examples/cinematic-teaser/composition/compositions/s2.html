@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s2-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-start; padding-left: 12cqw; }
+        #s2-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 2.6cqmin; max-width: 60cqw; }
+        #s2-rule { display: block; width: 18cqmin; height: 0.3cqmin; background: var(--vy-accent); transform-origin: left center; }
+        #s2-line { font-family: var(--vy-font-display), serif; font-weight: var(--vy-display-weight); font-size: 6.4cqmin; line-height: 1.06; letter-spacing: var(--vy-tracking-display); }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1920" data-height="1080">
+        <div id="s2-stack">
+          <span id="s2-rule"></span>
+          <h2 id="s2-line">Then light finds its shape.</h2>
+        </div>
+      </div>
+      <script>
+        // Act 2 — a rule draws, the line is revealed by a moving clip mask, then drifts out.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.inOut" }, 0.15);
+        tl.fromTo("#s2-line", { opacity: 0, x: -60, clipPath: "inset(0 100% 0 0)" }, { opacity: 1, x: 0, clipPath: "inset(0 0% 0 0)", duration: 1.3, ease: "expo.out" }, 0.5);
+        tl.to("#s2-stack", { opacity: 0, x: 80, duration: 0.6, ease: "power2.in" }, 2.6);
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

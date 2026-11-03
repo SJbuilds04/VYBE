@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s3-root { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 8cqw; gap: 6cqmin; background: var(--vy-bg); }
+        #s3-title { font-family: var(--vy-font-display), serif; font-size: 5.6cqmin; font-weight: var(--vy-display-weight); }
+        #s3-track { position: relative; height: 18cqmin; }
+        #s3-line { position: absolute; left: 0; right: 0; top: 4cqmin; height: 0.35cqmin; background: var(--vy-muted); transform-origin: left center; }
+        .s3-stop { position: absolute; top: 0; width: 22%; display: flex; flex-direction: column; gap: 1.6cqmin; }
+        .s3-dot { width: 3cqmin; height: 3cqmin; border-radius: 50%; margin-top: 2.7cqmin; background: var(--vy-accent); box-shadow: 0 0 0 1cqmin var(--vy-glow); }
+        .s3-year { font-family: var(--vy-font-mono), monospace; font-size: 3.4cqmin; color: var(--vy-accent); }
+        .s3-what { font-size: 2.8cqmin; color: var(--vy-ink); line-height: 1.25; }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1920" data-height="1080">
+        <h2 id="s3-title">How it unfolded</h2>
+        <div id="s3-track">
+          <div id="s3-line"></div>
+          <div class="s3-stop" style="left:0%"><span class="s3-dot"></span><span class="s3-year">1969</span><span class="s3-what">The first spark</span></div>
+          <div class="s3-stop" style="left:26%"><span class="s3-dot"></span><span class="s3-year">1984</span><span class="s3-what">It goes public</span></div>
+          <div class="s3-stop" style="left:52%"><span class="s3-dot"></span><span class="s3-year">2007</span><span class="s3-what">Everything changes</span></div>
+          <div class="s3-stop" style="left:78%"><span class="s3-dot"></span><span class="s3-year">Today</span><span class="s3-what">Where we stand</span></div>
+        </div>
+      </div>
+      <script>
+        // Timeline: the line draws left to right; each stop pops as the line reaches it.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s3-title", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.1);
+        tl.fromTo("#s3-line", { scaleX: 0 }, { scaleX: 1, duration: 2.4, ease: "power1.inOut" }, 0.4);
+        gsap.utils.toArray("#s3-root .s3-stop").forEach((stop, i) => {
+          const at = 0.45 + i * 0.62;
+          tl.fromTo(stop.querySelector(".s3-dot"), { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, at);
+          tl.fromTo([stop.querySelector(".s3-year"), stop.querySelector(".s3-what")], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", stagger: 0.08 }, at + 0.12);
+        });
+        tl.to("#s3-root", { opacity: 0, duration: 0.4, ease: "power1.in" }, 3.8);
+        window.__timelines["s3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

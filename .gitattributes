@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.mp4 binary
+*.mp3 binary
+*.wav binary
+*.png binary
+*.jpg binary
+*.webp binary
+# Agent discovery links are symlinks: never normalize them.
+.claude/skills/* -text
+.agents/skills/* -text

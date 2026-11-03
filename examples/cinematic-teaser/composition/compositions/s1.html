@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s1-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        #s1-stack { display: flex; flex-direction: column; align-items: center; gap: 2.4cqmin; text-align: center; padding: 0 8cqw; }
+        #s1-kicker { font-family: var(--vy-font-body), sans-serif; font-size: 2.7cqmin; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: var(--vy-accent); }
+        #s1-line { font-family: var(--vy-font-display), serif; font-weight: var(--vy-display-weight); font-size: 7.4cqmin; line-height: 1.04; letter-spacing: var(--vy-tracking-display); max-width: 78cqw; }
+        #s1-line .w { display: inline-block; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1920" data-height="1080">
+        <div id="s1-stack">
+          <span id="s1-kicker">A VYBE production</span>
+          <h1 id="s1-line"><span class="w">Every</span> <span class="w">story</span> <span class="w">begins</span> <span class="w">in</span> <span class="w">the</span> <span class="w">dark.</span></h1>
+        </div>
+      </div>
+      <script>
+        // Act 1 — words surface from blur, one breath at a time.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s1-kicker", { opacity: 0, y: -10, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.4, ease: "expo.out" }, 0.3);
+        tl.fromTo("#s1-line .w", { opacity: 0, y: 30, filter: "blur(14px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "expo.out", stagger: 0.14 }, 0.7);
+        tl.to("#s1-stack", { opacity: 0, scale: 1.06, filter: "blur(10px)", duration: 0.7, ease: "power2.in" }, 2.9);
+        window.__timelines["s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

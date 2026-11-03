@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s4-root { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2.4cqmin; padding: 0 10cqw; }
+        #s4-label { font-family: var(--vy-font-mono), monospace; font-size: 2.8cqmin; color: var(--vy-accent-2); }
+        #s4-line { font-family: var(--vy-font-display), sans-serif; font-weight: var(--vy-display-weight); font-size: 7.6cqmin; line-height: 1.05; letter-spacing: var(--vy-tracking-display); }
+        #s4-line .hl { color: var(--vy-accent); display: inline-block; }
+      </style>
+      <div id="s4-root" data-composition-id="s4" data-width="1920" data-height="1080">
+        <span id="s4-label">the takeaway</span>
+        <h2 id="s4-line">Simple parts. <span class="hl">Powerful</span> result.</h2>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s4-label", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+        tl.fromTo("#s4-line", { opacity: 0, y: 30, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8, ease: "expo.out" }, 0.2);
+        tl.fromTo("#s4-line .hl", { scale: 0.86, y: 6 }, { scale: 1, y: 0, duration: 0.7, ease: "back.out(2.6)" }, 0.75);
+        window.__timelines["s4"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

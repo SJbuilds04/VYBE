@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Explainer</title>
+    <!--
+      VYBE template: explainer (host)
+      Beats: question hook → labelled diagram that draws itself → numbered process → takeaway.
+      Host owns the measurement grid, progress rail and captions; each beat is a scene file.
+      Explainers usually want narration: `vybe audio` fills the caption + audio markers.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Space Grotesk"; src: url("assets/fonts/SpaceGrotesk-Variable.woff2") format("woff2"); font-weight: 300 700; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 800; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #030712; --vy-bg-2: #0b1424; --vy-ink: #e6f1ff; --vy-muted: #7f93ad;
+        --vy-accent: #5eead4; --vy-accent-2: #f59e0b; --vy-glow: rgba(94,234,212,0.30);
+        --vy-font-display: "Space Grotesk"; --vy-font-body: "Inter"; --vy-font-mono: "JetBrains Mono";
+        --vy-display-weight: 600; --vy-tracking-display: -0.02em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root {
+        position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size;
+        background: radial-gradient(90cqmax 70cqmax at 70% 30%, var(--vy-bg-2), var(--vy-bg) 70%);
+        color: var(--vy-ink); font-family: var(--vy-font-body), sans-serif;
+      }
+      #grid {
+        position: absolute; inset: -5%; opacity: 0.35;
+        background-image: linear-gradient(rgba(127,147,173,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(127,147,173,0.12) 1px, transparent 1px);
+        background-size: 6cqmin 6cqmin;
+      }
+      .slot { position: absolute; inset: 0; }
+      #rail { position: absolute; left: 6cqw; right: 6cqw; top: 5cqh; height: 0.4cqmin; background: rgba(127,147,173,0.25); border-radius: 1cqmin; overflow: hidden; z-index: 5; }
+      #rail-fill { width: 100%; height: 100%; background: var(--vy-accent); transform-origin: left center; }
+      #captions { position: absolute; left: 10cqw; right: 10cqw; bottom: 6cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; max-width: 100%; text-align: center; font-weight: 600; font-size: 3.1cqmin; line-height: 1.25; opacity: 0; padding: 0.6cqmin 1.6cqmin; border-radius: 1cqmin; background: rgba(3,7,18,0.72); }
+      .cap .cw { display: inline-block; opacity: 0.45; margin: 0 0.16em; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="16" data-width="1920" data-height="1080">
+      <div id="grid"></div>
+      <div id="s1" class="slot" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="3.5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" class="slot" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3.5" data-duration="5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" class="slot" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="8.5" data-duration="4.5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s4" class="slot" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="13" data-duration="3" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="rail"><div id="rail-fill"></div></div>
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#rail-fill", { scaleX: 0 }, { scaleX: 1, duration: 16, ease: "none" }, 0);
+      tl.fromTo("#grid", { x: 0, y: 0 }, { x: -40, y: -24, duration: 16, ease: "none" }, 0);
+
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const host = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          const words = cue.words && cue.words.length ? cue.words : [{ text: cue.text, start: cue.start }];
+          el.innerHTML = words.map((w, j) => `<span class="cw" id="cap-${i}-${j}">${w.text.replace(/</g, "&lt;")}</span>`).join(" ");
+          host.appendChild(el);
+          tl.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, cue.start);
+          words.forEach((w, j) => tl.to(`#cap-${i}-${j}`, { opacity: 1, duration: 0.08 }, w.start));
+          tl.to(el, { opacity: 0, duration: 0.15 }, cue.end + 0.05);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

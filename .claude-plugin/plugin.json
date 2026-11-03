@@ -1,0 +1,12 @@
+{
+  "name": "vybe",
+  "description": "VYBE by SJ BUILDS — an autonomous motion graphics studio. Turn one prompt into a storyboarded, animated, sound-designed, quality-checked MP4 using HyperFrames.",
+  "version": "1.0.0",
+  "author": {
+    "name": "SJ BUILDS"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/SJbuilds04/VYBE",
+  "repository": "https://github.com/SJbuilds04/VYBE",
+  "keywords": ["video", "motion-graphics", "hyperframes", "gsap", "threejs", "skill"]
+}

@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s1-root { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 9cqh; text-align: center; }
+        #s1-kicker { font-size: 2.8cqmin; font-weight: 600; color: var(--vy-accent); letter-spacing: 0.02em; }
+        #s1-name { font-family: var(--vy-font-display), sans-serif; font-weight: var(--vy-display-weight); font-size: 11cqmin; letter-spacing: var(--vy-tracking-display); line-height: 1; margin-top: 1.4cqmin; background: linear-gradient(180deg, var(--vy-ink), var(--vy-muted)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1920" data-height="1080">
+        <span id="s1-kicker">Introducing</span>
+        <h1 id="s1-name">Product Name</h1>
+      </div>
+      <script>
+        // Hook: name rises out of a soft blur while the product lifts in (host).
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s1-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+        // The name is on screen at frame 0 (it is the thumbnail on social players) and settles into place.
+        tl.fromTo("#s1-name", { y: 34, scale: 1.05 }, { y: 0, scale: 1, duration: 1.6, ease: "expo.out" }, 0);
+        tl.to("#s1-root", { opacity: 0, y: -30, duration: 0.5, ease: "power2.in" }, 2.45);
+        window.__timelines["s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

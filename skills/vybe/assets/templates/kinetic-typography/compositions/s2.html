@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s2-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--vy-bg); }
+        #s2-stack { display: flex; flex-direction: column; align-items: center; }
+        .s2-row { font-family: var(--vy-font-display), sans-serif; font-size: 15cqmin; line-height: 0.9; text-transform: uppercase; display: block; }
+        .s2-row.outline { color: transparent; -webkit-text-stroke: 0.3cqmin var(--vy-ink); }
+        .s2-row.hot { color: var(--vy-accent); }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1920" data-height="1080">
+        <div id="s2-stack">
+          <span class="s2-row outline">Every</span>
+          <span class="s2-row">beat</span>
+          <span class="s2-row outline">lands</span>
+          <span class="s2-row hot">a word</span>
+        </div>
+      </div>
+      <script>
+        // Rows drop in on the beat, then the whole stack becomes the camera move:
+        // it rotates a quarter turn and scales past the frame into the next scene.
+        const BEAT = 0.5;
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-stack .s2-row", { yPercent: -120, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.3, ease: "power4.out", stagger: BEAT }, 0);
+        tl.fromTo("#s2-stack", { rotation: 0, scale: 1 }, { rotation: -90, scale: 3.2, duration: 1.1, ease: "expo.in" }, BEAT * 4.6);
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

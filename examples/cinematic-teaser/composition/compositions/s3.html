@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s3-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #s3-stack { display: flex; flex-direction: column; align-items: center; gap: 2.6cqmin; text-align: center; }
+        #s3-title { font-family: var(--vy-font-display), serif; font-weight: 600; font-size: 15cqmin; letter-spacing: -0.03em; line-height: 0.95; text-shadow: 0 0 6cqmin var(--vy-glow); }
+        #s3-title .ch { display: inline-block; }
+        #s3-tag { font-family: var(--vy-font-body), sans-serif; font-size: 2.7cqmin; font-weight: 500; letter-spacing: 0.42em; text-transform: uppercase; color: var(--vy-accent); }
+        #s3-flare { position: absolute; top: -10%; bottom: -10%; left: -24cqw; width: 18cqw; background: linear-gradient(90deg, transparent, var(--vy-glow) 35%, rgba(255,240,215,0.42) 50%, var(--vy-glow) 65%, transparent); mix-blend-mode: screen; filter: blur(1.4cqmin); transform: skewX(-14deg); }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1920" data-height="1080">
+        <div id="s3-stack">
+          <h1 id="s3-title"><span class="ch">V</span><span class="ch">Y</span><span class="ch">B</span><span class="ch">E</span></h1>
+          <span id="s3-tag">From imagination to motion</span>
+        </div>
+        <div id="s3-flare" data-layout-allow-overflow></div>
+      </div>
+      <script>
+        // Act 3 — title climax: letters land from depth, a flare wipes across, slow push holds.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s3-title .ch", { opacity: 0, scale: 2.4, filter: "blur(24px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 1.4, ease: "expo.out", stagger: 0.09 }, 0.1);
+        tl.fromTo("#s3-flare", { xPercent: 0, skewX: -14 }, { xPercent: 820, skewX: -14, duration: 0.85, ease: "power2.inOut" }, 0.7);
+        tl.fromTo("#s3-tag", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.75);
+        tl.fromTo("#s3-stack", { scale: 1 }, { scale: 1.04, duration: 2.8, ease: "sine.inOut" }, 0.4);
+        window.__timelines["s3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

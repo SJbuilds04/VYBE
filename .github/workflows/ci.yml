@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Repair agent discovery links (Windows checkouts without symlinks)
+        run: node scripts/link-skills.mjs
+      - name: Structural validation (Agent Skills spec, links, manifests, templates, secret scan)
+        run: node scripts/validate-skills.mjs
+      - name: Unit tests
+        run: npm test
+
+  templates:
+    # Real HyperFrames lint of every template in two formats + the image-to-motion scaffolds.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+      - run: node --test tests/integration/templates.test.mjs

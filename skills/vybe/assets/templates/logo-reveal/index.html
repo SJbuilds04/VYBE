@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Logo Reveal</title>
+    <!--
+      VYBE template: logo-reveal (host), 7s.
+      One sub-composition holds the whole sting: shards converge into a mark, a
+      shockwave ring fires, the wordmark spreads into place, the tagline lands.
+      Replace the shard SVG with the brand's real mark (resolve the official file
+      with `npx hyperframes media-use resolve --type logo`); never redraw a real logo.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Space Grotesk"; src: url("assets/fonts/SpaceGrotesk-Variable.woff2") format("woff2"); font-weight: 300 700; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #05010d; --vy-bg-2: #120a26; --vy-ink: #f4f1ff; --vy-muted: #8b7fb3;
+        --vy-accent: #8b5cf6; --vy-accent-2: #22d3ee; --vy-glow: rgba(139,92,246,0.45);
+        --vy-font-display: "Space Grotesk"; --vy-font-body: "Inter"; --vy-font-mono: "Inter";
+        --vy-display-weight: 700; --vy-tracking-display: 0.02em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; background: radial-gradient(70cqmax 60cqmax at 50% 50%, var(--vy-bg-2), var(--vy-bg) 70%); color: var(--vy-ink); font-family: var(--vy-font-body), sans-serif; }
+      #bloom { position: absolute; left: 50%; top: 50%; width: 90cqmin; height: 90cqmin; margin: -45cqmin 0 0 -45cqmin; border-radius: 50%; background: radial-gradient(closest-side, var(--vy-glow), transparent); opacity: 0; }
+      .slot { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="7" data-width="1920" data-height="1080">
+      <div id="bloom"></div>
+      <div id="sting" class="slot" data-composition-id="sting" data-composition-src="compositions/sting.html" data-start="0" data-duration="7" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#bloom", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.5, ease: "expo.out" }, 1.75);
+      tl.to("#bloom", { opacity: 0.45, scale: 1, duration: 2, ease: "sine.inOut" }, 2.3);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

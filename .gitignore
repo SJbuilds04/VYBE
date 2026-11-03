@@ -1,0 +1,10 @@
+node_modules/
+vybe-output/
+.hyperframes/
+renders/
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+tests/.tmp/

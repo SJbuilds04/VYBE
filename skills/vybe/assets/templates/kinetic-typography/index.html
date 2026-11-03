@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Kinetic Typography</title>
+    <!--
+      VYBE template: kinetic-typography (host), 10s on a 0.5s beat grid (120 BPM).
+      Every visual change lands on a beat. When a music track exists, run
+      `npx hyperframes beats` (or `hyperframes audio --only beats`) and retime BEAT
+      in each scene to the measured grid instead of the assumed 0.5s.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Anton"; src: url("assets/fonts/Anton-Regular.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #0e0e0e; --vy-bg-2: #1a1a1a; --vy-ink: #fafafa; --vy-muted: #8a8a8a;
+        --vy-accent: #ff4d2e; --vy-accent-2: #ffd400; --vy-glow: rgba(255,77,46,0.35);
+        --vy-font-display: "Anton"; --vy-font-body: "Inter"; --vy-font-mono: "Inter";
+        --vy-display-weight: 400; --vy-tracking-display: -0.01em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; background: var(--vy-bg); color: var(--vy-ink); font-family: var(--vy-font-body), sans-serif; }
+      .slot { position: absolute; inset: 0; }
+      #captions { position: absolute; left: 10cqw; right: 10cqw; bottom: 6cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; text-align: center; font-weight: 700; font-size: 3cqmin; opacity: 0; mix-blend-mode: difference; color: #fff; }
+      .cap .cw { display: inline-block; margin: 0 0.15em; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="10" data-width="1920" data-height="1080">
+      <div id="s1" class="slot" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="3" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" class="slot" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3" data-duration="3.5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" class="slot" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="6.5" data-duration="3.5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const host = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          el.textContent = cue.text;
+          host.appendChild(el);
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.1 }, cue.start);
+          tl.to(el, { opacity: 0, duration: 0.1 }, cue.end);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

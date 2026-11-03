@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Product Ad</title>
+    <!--
+      VYBE template: product-ad (host)
+      The hero product lives on the HOST so it stays continuous across scenes
+      (shared-element continuity): scenes change the world around it, the host
+      timeline moves the product at global time.
+      Replace #hero-device with the real product: put an <img> in #hero-screen
+      (screenshot / UI) or swap the whole device for a cut-out product photo
+      (`npx hyperframes remove-background product.jpg -o assets/images/product.png`).
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #f5f5f7; --vy-bg-2: #ffffff; --vy-ink: #1d1d1f; --vy-muted: #6e6e73;
+        --vy-accent: #0071e3; --vy-accent-2: #bf4800; --vy-glow: rgba(0,113,227,0.18);
+        --vy-font-display: "Inter"; --vy-font-body: "Inter"; --vy-font-mono: "Inter";
+        --vy-display-weight: 650; --vy-tracking-display: -0.045em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root {
+        position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size;
+        background: radial-gradient(120cqmax 80cqmax at 50% 110%, var(--vy-bg-2), var(--vy-bg) 60%);
+        color: var(--vy-ink); font-family: var(--vy-font-body), sans-serif;
+      }
+      .slot { position: absolute; inset: 0; }
+      #stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; perspective: 220cqmin; z-index: 2; pointer-events: none; }
+      #hero { position: relative; width: 34cqmin; height: 68cqmin; transform-style: preserve-3d; }
+      #hero-shadow { position: absolute; left: 10%; right: 10%; bottom: -7cqmin; height: 5cqmin; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,0.28), transparent); filter: blur(1.4cqmin); }
+      #hero-device {
+        position: absolute; inset: 0; border-radius: 5.6cqmin; padding: 1.3cqmin;
+        background: linear-gradient(145deg, #3a3a3c, #0b0b0c 55%, #2c2c2e);
+        box-shadow: 0 4cqmin 8cqmin rgba(0,0,0,0.25), inset 0 0 0 0.25cqmin rgba(255,255,255,0.12);
+      }
+      #hero-screen {
+        position: relative; width: 100%; height: 100%; border-radius: 4.4cqmin; overflow: hidden;
+        background: linear-gradient(160deg, var(--vy-accent) 0%, #6e3cff 48%, var(--vy-accent-2) 100%);
+      }
+      #hero-screen img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #hero-glint { position: absolute; inset: -20% -60%; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%); }
+      #hero-island { position: absolute; top: 2.2cqmin; left: 50%; width: 9cqmin; height: 2.6cqmin; margin-left: -4.5cqmin; border-radius: 2cqmin; background: #000; }
+      #captions { position: absolute; left: 8cqw; right: 8cqw; bottom: 7cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; max-width: 100%; text-align: center; font-weight: 600; font-size: 3cqmin; line-height: 1.25; opacity: 0; color: var(--vy-ink); }
+      .cap .cw { display: inline-block; opacity: 0.35; margin: 0 0.18em; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+      <div id="s1" class="slot" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="3" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" class="slot" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3" data-duration="3.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" class="slot" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="6.6" data-duration="2.8" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s4" class="slot" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="9.4" data-duration="2.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="stage">
+        <div id="hero">
+          <div id="hero-shadow"></div>
+          <div id="hero-device">
+            <div id="hero-screen"><div id="hero-glint" data-layout-allow-overflow></div></div>
+            <div id="hero-island"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const W = Number(document.getElementById("vybe-root").dataset.width);
+      const H = Number(document.getElementById("vybe-root").dataset.height);
+      const wide = W > H;
+      // Scene choreography for the hero, in global time. Landscape moves it sideways
+      // to make room for copy; portrait/square moves it vertically instead.
+      tl.fromTo("#hero", { y: H * 0.7, rotationY: -28, rotationX: 12, scale: 0.9 }, { y: wide ? H * 0.24 : H * 0.12, rotationY: -14, rotationX: 4, scale: wide ? 0.95 : 1, duration: 2.2, ease: "expo.out" }, 0.3);
+      tl.fromTo("#hero-glint", { xPercent: -60 }, { xPercent: 60, duration: 1.4, ease: "power2.inOut" }, 1.4);
+      tl.to("#hero", { x: wide ? W * 0.2 : 0, y: wide ? 0 : H * 0.14, rotationY: wide ? -24 : -10, rotationX: 0, scale: wide ? 1.05 : 0.8, duration: 1.2, ease: "power3.inOut" }, 2.9);
+      tl.to("#hero", { rotationY: 18, duration: 2.3, ease: "sine.inOut" }, 4.1);
+      tl.to("#hero", { x: wide ? -W * 0.24 : 0, y: wide ? 0 : -H * 0.17, rotationY: 8, scale: wide ? 0.92 : 0.62, duration: 1.1, ease: "power3.inOut" }, 6.4);
+      tl.set("#hero-glint", { xPercent: -60 }, 7.55);
+      tl.to("#hero-glint", { xPercent: 60, duration: 1.2, ease: "power2.inOut" }, 7.6);
+      tl.to("#hero", { x: 0, y: wide ? -H * 0.05 : -H * 0.12, rotationY: 0, scale: wide ? 0.62 : 0.5, duration: 1.1, ease: "expo.inOut" }, 9.2);
+
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const host = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          const words = cue.words && cue.words.length ? cue.words : [{ text: cue.text, start: cue.start }];
+          el.innerHTML = words.map((w, j) => `<span class="cw" id="cap-${i}-${j}">${w.text.replace(/</g, "&lt;")}</span>`).join(" ");
+          host.appendChild(el);
+          tl.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, cue.start);
+          words.forEach((w, j) => tl.to(`#cap-${i}-${j}`, { opacity: 1, duration: 0.08 }, w.start));
+          tl.to(el, { opacity: 0, duration: 0.15 }, cue.end + 0.05);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

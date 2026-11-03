@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s1-root { position: absolute; inset: 0; }
+        .s1-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .s1-card span { font-family: var(--vy-font-display), sans-serif; font-size: 34cqmin; line-height: 0.85; text-transform: uppercase; letter-spacing: var(--vy-tracking-display); display: inline-block; }
+        #s1-c1 { background: var(--vy-bg); color: var(--vy-ink); }
+        #s1-c2 { background: var(--vy-accent); color: var(--vy-bg); }
+        #s1-c3 { background: var(--vy-accent-2); color: var(--vy-bg); }
+        #s1-c4 { background: var(--vy-ink); color: var(--vy-accent); }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1920" data-height="1080">
+        <div class="s1-card" id="s1-c1"><span>Words</span></div>
+        <div class="s1-card" id="s1-c2"><span>that</span></div>
+        <div class="s1-card" id="s1-c3"><span>hit</span></div>
+        <div class="s1-card" id="s1-c4"><span>hard.</span></div>
+      </div>
+      <script>
+        // One word per beat. Each card hard-cuts in (instant clip reveal) and its word
+        // slams from oversize. Word 1 is on screen at frame 0.
+        const BEAT = 0.5;
+        const tl = gsap.timeline({ paused: true });
+        const cards = ["#s1-c1", "#s1-c2", "#s1-c3", "#s1-c4"];
+        cards.slice(1).forEach((c, i) => {
+          const at = (i + 1) * BEAT * 1.5;
+          tl.fromTo(c, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.12, ease: "power4.out" }, at);
+          // The covered card would still sit under the new one: hide it once fully covered.
+          tl.fromTo(cards[i], { opacity: 1 }, { opacity: 0, duration: 0.01 }, at + 0.13);
+        });
+        ["#s1-c1", "#s1-c2", "#s1-c3", "#s1-c4"].forEach((c, i) => {
+          tl.fromTo(`${c} span`, { scale: i === 0 ? 1.25 : 2.4, rotation: i % 2 ? -6 : 6 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(1.6)" }, i * BEAT * 1.5);
+        });
+        window.__timelines["s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

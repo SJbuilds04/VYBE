@@ -1,0 +1,49 @@
+{
+  "title": "Light Finds Its Shape",
+  "concept": "Darkness yielding to form: every scene is light discovering something a little more defined, ending on the name.",
+  "thumbnail": 8.6,
+  "music": { "mood": "cinematic", "bpm": 70, "query": "dark cinematic orchestral swell, no vocals, 70 bpm", "notes": "drone opens, swell lands on the title at 6.8s" },
+  "scenes": [
+    {
+      "id": "s1", "name": "Emergence", "duration": 3.6, "purpose": "hook",
+      "composition": "Centered kicker and one serif line over a deep particle field; dark orb barely visible behind",
+      "text": ["A VYBE production", "Every story begins in the dark."],
+      "background": "Three.js dust field in deep fog, unlit metallic orb",
+      "animation": "Kicker fades down from blur; words surface from blur one by one; whole stack dissolves forward",
+      "camera": "Slow dolly-in through the dust",
+      "transition": "Stack blurs out forward as the key light starts to rise",
+      "sfx": [{ "name": "whoosh-cinematic", "at": 2.9 }],
+      "music": "Low drone only",
+      "narration": "Every story begins in the dark.",
+      "narrationOffset": 0.6,
+      "technique": ["three.js", "gsap"]
+    },
+    {
+      "id": "s2", "name": "Light arrives", "duration": 3.2, "purpose": "build",
+      "composition": "Left-aligned rule and line; the orb lights up warm on the right third",
+      "text": ["Then light finds its shape."],
+      "background": "Key and rim lights rise on the orb; haze glow blooms",
+      "animation": "Gold rule draws left to right, line revealed by a moving clip mask, drifts out right",
+      "camera": "Lateral truck across the orb",
+      "transition": "Line slides out as the camera cranes up toward the title",
+      "sfx": [{ "name": "sparkle", "at": 0.5, "volume": 0.35 }],
+      "music": "Strings swell in",
+      "narration": "Then, light finds its shape.",
+      "narrationOffset": 0.4,
+      "technique": ["three.js", "gsap"]
+    },
+    {
+      "id": "s3", "name": "Title", "duration": 3.2, "purpose": "climax",
+      "composition": "Huge serif VYBE centered inside the glowing halo ring, tagline beneath",
+      "text": ["VYBE", "From imagination to motion"],
+      "background": "Orb fully lit, halo ring ignites around the title",
+      "animation": "Letters land from depth with blur, flare wipes across, slow push holds",
+      "camera": "Crane up with a gentle push",
+      "transition": "Hold on the lockup to the end",
+      "sfx": [{ "name": "impact-bass-1", "at": 0.2 }],
+      "music": "Swell peaks on the title, rings out",
+      "narration": "",
+      "technique": ["three.js", "gsap"]
+    }
+  ]
+}

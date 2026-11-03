@@ -1,0 +1,119 @@
+{
+  "$comment": "VYBE style presets. `tokens` become CSS custom properties on :root (prefixed --vy-). Fonts refer to files in assets/fonts. Everything else is direction the creative director adapts, not a rule.",
+  "presets": {
+    "apple-minimal": {
+      "label": "Apple Minimal",
+      "tokens": {
+        "bg": "#f5f5f7", "bg-2": "#ffffff", "ink": "#1d1d1f", "muted": "#6e6e73",
+        "accent": "#0071e3", "accent-2": "#bf4800", "glow": "rgba(0,113,227,0.18)",
+        "font-display": "Inter", "font-body": "Inter", "font-mono": "JetBrains Mono",
+        "display-weight": "650", "tracking-display": "-0.045em"
+      },
+      "dark_variant": { "bg": "#000000", "bg-2": "#101012", "ink": "#f5f5f7", "muted": "#86868b" },
+      "motion": { "ease_in": "power3.out", "ease_move": "power2.inOut", "beat_seconds": 1.2, "energy": "calm", "stagger": 0.06 },
+      "camera": ["slow push-in on hero object", "orbit 15–25° around product", "rack focus via blur on background layer"],
+      "transitions": ["clean hard cut on the beat", "white flash-to-reveal", "shared-element continuity (object stays, world changes)", "mask wipe following product edge"],
+      "lighting": "soft top key with long gradient falloff; a single rim light on product edges; no neon",
+      "texture": "pristine; no grain; generous negative space",
+      "sound": { "music": "minimal piano or soft electronic pulse, 90–105 BPM", "sfx": ["soft whoosh", "click-soft", "chime on the hero line"] }
+    },
+    "cinematic": {
+      "label": "Cinematic",
+      "tokens": {
+        "bg": "#07080b", "bg-2": "#12151c", "ink": "#f2efe8", "muted": "#9a968c",
+        "accent": "#d9a441", "accent-2": "#5b8db8", "glow": "rgba(217,164,65,0.28)",
+        "font-display": "Fraunces", "font-body": "Inter", "font-mono": "JetBrains Mono",
+        "display-weight": "500", "tracking-display": "-0.02em"
+      },
+      "motion": { "ease_in": "expo.out", "ease_move": "sine.inOut", "beat_seconds": 2.2, "energy": "measured", "stagger": 0.09 },
+      "camera": ["slow dolly-in", "crane up revealing scale", "parallax truck across layered depth", "push through particles"],
+      "transitions": ["fade through black on act breaks only", "light-leak/flare wipe", "match cut on shape", "slow cross-dissolve with scale"],
+      "lighting": "low-key, strong rim/back light, volumetric haze, warm key vs cool fill",
+      "texture": "subtle film grain, letterbox optional, vignette",
+      "sound": { "music": "orchestral or hybrid cinematic swell with a build to the climax", "sfx": ["whoosh-cinematic", "impact-bass on reveals", "riser into the climax"] }
+    },
+    "cyberpunk": {
+      "label": "Cyberpunk",
+      "tokens": {
+        "bg": "#05010d", "bg-2": "#120a26", "ink": "#eafcff", "muted": "#8b7fb3",
+        "accent": "#00f0ff", "accent-2": "#ff2bd6", "glow": "rgba(0,240,255,0.45)",
+        "font-display": "Orbitron", "font-body": "Space Grotesk", "font-mono": "JetBrains Mono",
+        "display-weight": "800", "tracking-display": "0.04em"
+      },
+      "motion": { "ease_in": "power4.out", "ease_move": "power2.inOut", "beat_seconds": 0.8, "energy": "high", "stagger": 0.03 },
+      "camera": ["fast fly-through of a grid city", "dutch tilt hold", "whip pan between scenes", "snap zoom on data"],
+      "transitions": ["RGB-split glitch cut", "scanline wipe", "digital slice/displace", "flash frame on downbeat"],
+      "lighting": "neon practicals, magenta/cyan split lighting, bloom, wet reflections",
+      "texture": "scanlines, chromatic aberration, noise",
+      "sound": { "music": "dark synthwave / electronic, 110–128 BPM", "sfx": ["glitch-1..3", "impact-bass", "key-press bursts"] }
+    },
+    "scientific": {
+      "label": "Scientific",
+      "tokens": {
+        "bg": "#030712", "bg-2": "#0b1424", "ink": "#e6f1ff", "muted": "#7f93ad",
+        "accent": "#5eead4", "accent-2": "#f59e0b", "glow": "rgba(94,234,212,0.30)",
+        "font-display": "Space Grotesk", "font-body": "Inter", "font-mono": "JetBrains Mono",
+        "display-weight": "600", "tracking-display": "-0.02em"
+      },
+      "motion": { "ease_in": "power2.out", "ease_move": "sine.inOut", "beat_seconds": 1.8, "energy": "curious", "stagger": 0.05 },
+      "camera": ["orbit around a 3D model", "zoom through scales (macro → micro)", "cutaway with labelled callouts"],
+      "transitions": ["zoom-through into the next scale", "diagram morph", "callout line draws to next subject"],
+      "lighting": "clean studio lighting on 3D models, emissive accents on data",
+      "texture": "fine grid, measurement ticks, annotation lines",
+      "sound": { "music": "ambient curious electronic, light pulse", "sfx": ["ping on callouts", "soft whoosh on zooms", "sparkle on discovery"] }
+    },
+    "kinetic-typography": {
+      "label": "Kinetic Typography",
+      "tokens": {
+        "bg": "#0e0e0e", "bg-2": "#1a1a1a", "ink": "#fafafa", "muted": "#8a8a8a",
+        "accent": "#ff4d2e", "accent-2": "#ffd400", "glow": "rgba(255,77,46,0.35)",
+        "font-display": "Anton", "font-body": "Inter", "font-mono": "JetBrains Mono",
+        "display-weight": "400", "tracking-display": "-0.01em"
+      },
+      "motion": { "ease_in": "back.out(1.6)", "ease_move": "power3.inOut", "beat_seconds": 0.5, "energy": "rhythmic", "stagger": 0.04 },
+      "camera": ["type-as-camera: scale through letterforms", "rotate the whole word grid 90°", "track along a sentence"],
+      "transitions": ["word becomes the next scene's frame", "hard cut on every beat", "mask reveal through letter counters"],
+      "lighting": "flat graphic color fields; contrast does the lighting",
+      "texture": "none or halftone; bold color blocks",
+      "sound": { "music": "beat-forward track; cut every visual change on a beat", "sfx": ["pop", "click", "impact on the hook word"] }
+    },
+    "corporate": {
+      "label": "Corporate",
+      "tokens": {
+        "bg": "#0b1220", "bg-2": "#121c30", "ink": "#f8fafc", "muted": "#94a3b8",
+        "accent": "#3b82f6", "accent-2": "#22c55e", "glow": "rgba(59,130,246,0.25)",
+        "font-display": "Inter", "font-body": "Inter", "font-mono": "JetBrains Mono",
+        "display-weight": "700", "tracking-display": "-0.03em"
+      },
+      "motion": { "ease_in": "power3.out", "ease_move": "power2.inOut", "beat_seconds": 1.4, "energy": "confident", "stagger": 0.06 },
+      "camera": ["gentle push-in on key metric", "lateral slide between panels"],
+      "transitions": ["panel slide", "grid assemble", "count-up handoff"],
+      "lighting": "even, bright, trustworthy; soft shadows on cards",
+      "texture": "clean cards, subtle grid",
+      "sound": { "music": "uplifting corporate pulse, 100–115 BPM", "sfx": ["click-soft", "whoosh-short", "chime on result"] }
+    },
+    "experimental": {
+      "label": "Experimental",
+      "tokens": {
+        "bg": "#0a0a0a", "bg-2": "#161616", "ink": "#f0f0f0", "muted": "#7a7a7a",
+        "accent": "#c6ff00", "accent-2": "#7c3aed", "glow": "rgba(198,255,0,0.35)",
+        "font-display": "Space Grotesk", "font-body": "Space Grotesk", "font-mono": "JetBrains Mono",
+        "display-weight": "700", "tracking-display": "-0.04em"
+      },
+      "motion": { "ease_in": "expo.inOut", "ease_move": "none", "beat_seconds": 1.0, "energy": "unpredictable", "stagger": 0.02 },
+      "camera": ["impossible camera through generative geometry", "infinite zoom loop", "rotation around non-center pivot"],
+      "transitions": ["shader-like displacement", "geometry swallows frame", "pixel sort / slice"],
+      "lighting": "emissive geometry, no realism required",
+      "texture": "noise fields, dithering, feedback trails",
+      "sound": { "music": "abstract electronic / IDM, textural", "sfx": ["glitch", "sparkle", "sub impact"] }
+    }
+  },
+  "fonts": {
+    "Inter": "Inter-Variable.woff2",
+    "Space Grotesk": "SpaceGrotesk-Variable.woff2",
+    "Fraunces": "Fraunces-Variable.woff2",
+    "JetBrains Mono": "JetBrainsMono-Variable.woff2",
+    "Anton": "Anton-Regular.woff2",
+    "Orbitron": "Orbitron-Variable.woff2"
+  }
+}

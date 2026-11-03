@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Documentary</title>
+    <!--
+      VYBE template: documentary (host), 17s.
+      Beats: archival plate + date stamp → quote → timeline → title card.
+      The plates are procedural placeholders. Replace each `.plate-art` with a real
+      <img> (user-supplied, or licensed via `npx hyperframes media-use resolve --type image`)
+      and keep the Ken Burns wrapper: animate the wrapper, never the timed clip.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 800; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #0d0b08; --vy-bg-2: #1c1813; --vy-ink: #f1e9dc; --vy-muted: #a89a86;
+        --vy-accent: #e0b25b; --vy-accent-2: #8a3b2a; --vy-glow: rgba(224,178,91,0.25);
+        --vy-font-display: "Fraunces"; --vy-font-body: "Inter"; --vy-font-mono: "JetBrains Mono";
+        --vy-display-weight: 500; --vy-tracking-display: -0.015em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; background: var(--vy-bg); color: var(--vy-ink); font-family: var(--vy-font-body), sans-serif; }
+      .slot { position: absolute; inset: 0; }
+      #grain { position: absolute; inset: -10%; width: 120%; height: 120%; z-index: 21; opacity: 0.12; mix-blend-mode: overlay; pointer-events: none; }
+      #captions { position: absolute; left: 12cqw; right: 12cqw; bottom: 7cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; max-width: 100%; text-align: center; font-weight: 500; font-size: 3cqmin; line-height: 1.3; opacity: 0; color: #fff; text-shadow: 0 0.2cqmin 1cqmin rgba(0,0,0,0.9); }
+      .cap .cw { display: inline-block; margin: 0 0.15em; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="17" data-width="1920" data-height="1080">
+      <div id="s1" class="slot" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" class="slot" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="5" data-duration="4.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" class="slot" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="9.6" data-duration="4.2" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s4" class="slot" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="13.8" data-duration="3.2" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <svg id="grain" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
+        <filter id="doc-noise"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" stitchTiles="stitch" /></filter>
+        <rect width="200" height="200" filter="url(#doc-noise)" />
+      </svg>
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      // Film-gate weave: the grain jitters on a stepped ease (24fps feel).
+      tl.fromTo("#grain", { x: 0, y: 0 }, { x: -30, y: 22, duration: 17, ease: "steps(68)" }, 0);
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const host = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          const words = cue.words && cue.words.length ? cue.words : [{ text: cue.text, start: cue.start }];
+          el.innerHTML = words.map((w, j) => `<span class="cw" id="cap-${i}-${j}">${w.text.replace(/</g, "&lt;")}</span>`).join(" ");
+          host.appendChild(el);
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, cue.start);
+          tl.to(el, { opacity: 0, duration: 0.2 }, cue.end + 0.05);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

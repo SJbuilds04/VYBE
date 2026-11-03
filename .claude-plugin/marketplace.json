@@ -1,0 +1,15 @@
+{
+  "name": "vybe",
+  "description": "VYBE — From imagination to motion. Autonomous motion graphics agent skills by SJ BUILDS.",
+  "owner": {
+    "name": "SJ BUILDS",
+    "url": "https://github.com/SJbuilds04"
+  },
+  "plugins": [
+    {
+      "name": "vybe",
+      "source": "./",
+      "description": "Turn natural-language prompts into cinematic, animated, professionally rendered videos using HyperFrames."
+    }
+  ]
+}

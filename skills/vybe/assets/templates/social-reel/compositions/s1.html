@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s1-root { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 14cqw 0 6cqw; background: var(--vy-accent); color: var(--vy-bg); }
+        #s1-hook { font-family: var(--vy-font-display), sans-serif; font-weight: var(--vy-display-weight); font-size: 18cqmin; line-height: 0.92; text-transform: uppercase; letter-spacing: var(--vy-tracking-display); }
+        #s1-hook span { display: block; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1080" data-height="1920">
+        <h1 id="s1-hook"><span>Stop</span><span>scrolling.</span><span>Watch this.</span></h1>
+      </div>
+      <script>
+        // Hook visible at frame 0; each line punches with a small scale kick on the beat.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s1-hook span", { scale: 1.12, transformOrigin: "0% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.45 }, 0);
+        tl.fromTo("#s1-hook", { rotation: -2 }, { rotation: 0, duration: 1.6, ease: "power2.out" }, 0);
+        tl.to("#s1-root", { yPercent: -100, duration: 0.35, ease: "power3.in" }, 1.85);
+        window.__timelines["s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

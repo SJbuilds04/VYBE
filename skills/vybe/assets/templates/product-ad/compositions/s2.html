@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        /* Features column sits opposite the product (host moves it right in landscape, down in portrait). */
+        #s2-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-start; padding: 0 0 0 9cqw; }
+        #s2-list { display: flex; flex-direction: column; gap: 4.2cqmin; max-width: 46cqw; }
+        .s2-item { display: flex; align-items: center; gap: 2.4cqmin; }
+        .s2-dot { flex: none; width: 5.6cqmin; height: 5.6cqmin; border-radius: 50%; background: var(--vy-glow); display: grid; place-items: center; }
+        .s2-dot i { display: block; width: 1.8cqmin; height: 1.8cqmin; border-radius: 50%; background: var(--vy-accent); }
+        .s2-text b { display: block; font-size: 4.4cqmin; font-weight: 650; letter-spacing: -0.03em; line-height: 1.1; }
+        .s2-text span { display: block; font-size: 2.8cqmin; color: var(--vy-muted); margin-top: 0.5cqmin; }
+        @container (max-aspect-ratio: 1/1) {
+          #s2-root { align-items: flex-start; justify-content: center; padding: 8cqh 6cqw 0; }
+          #s2-list { max-width: 88cqw; gap: 3cqmin; }
+        }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1920" data-height="1080">
+        <div id="s2-list">
+          <div class="s2-item"><div class="s2-dot"><i></i></div><div class="s2-text"><b>Feature one</b><span>The benefit, in one short line.</span></div></div>
+          <div class="s2-item"><div class="s2-dot"><i></i></div><div class="s2-text"><b>Feature two</b><span>Concrete, measurable, specific.</span></div></div>
+          <div class="s2-item"><div class="s2-dot"><i></i></div><div class="s2-text"><b>Feature three</b><span>What it lets the viewer do.</span></div></div>
+        </div>
+      </div>
+      <script>
+        // Features cascade in sync with the product's slow turn.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-root .s2-item", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.8, ease: "expo.out", stagger: 0.45 }, 0.45);
+        tl.fromTo("#s2-root .s2-dot", { scale: 0 }, { scale: 1, duration: 0.6, ease: "back.out(2)", stagger: 0.45 }, 0.5);
+        tl.to("#s2-list", { opacity: 0, x: -40, duration: 0.45, ease: "power2.in" }, 3.1);
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

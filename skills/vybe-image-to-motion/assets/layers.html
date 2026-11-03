@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Image to Motion (layers)</title>
+    <!--
+      Programmatic 2.5D image motion. Layers (back → front): background plate,
+      fog, subject cut-out, particles, light sweep, vignette. A camera move is
+      applied per layer with depth-scaled amplitude (parallax). Parameters come
+      from #i2m-config (written by `i2m.mjs scaffold`). The original pixels are
+      never altered: this is camera and atmosphere motion, not generated motion.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+      #i2m-root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; background: #000; }
+      .layer { position: absolute; inset: -8%; width: 116%; height: 116%; }
+      .layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #fog { background: radial-gradient(70cqmax 30cqmax at 30% 70%, rgba(255,255,255,0.16), transparent 70%), radial-gradient(60cqmax 26cqmax at 75% 40%, rgba(255,255,255,0.12), transparent 70%); opacity: 0; }
+      #particles { pointer-events: none; }
+      .pt { position: absolute; border-radius: 50%; background: rgba(255,248,230,0.9); box-shadow: 0 0 0.8cqmin rgba(255,240,200,0.8); }
+      #sweep { position: absolute; top: -10%; bottom: -10%; left: -50%; width: 45%; background: linear-gradient(100deg, transparent, rgba(255,240,215,0.22), transparent); mix-blend-mode: screen; filter: blur(3cqmin); opacity: 0; }
+      #vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%); }
+      #captions { position: absolute; left: 8cqw; right: 8cqw; bottom: 8cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; text-align: center; font: 600 3.1cqmin/1.25 sans-serif; color: #fff; opacity: 0; text-shadow: 0 0.3cqmin 1.4cqmin rgba(0,0,0,0.85); }
+    </style>
+  </head>
+  <body>
+    <div id="i2m-root" data-composition-id="main" data-start="0" data-duration="8" data-width="1920" data-height="1080">
+      <div id="plate" class="layer" data-layout-allow-overflow><img id="plate-img" src="assets/images/plate.png" alt="" /></div>
+      <div id="fog" class="layer" data-layout-allow-overflow></div>
+      <div id="subject" class="layer" data-layout-allow-overflow><img id="subject-img" src="assets/images/subject.png" alt="" /></div>
+      <div id="particles" class="layer" data-layout-allow-overflow></div>
+      <div id="sweep" data-layout-allow-overflow></div>
+      <div id="vignette"></div>
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script type="application/json" id="i2m-config">{"camera":"push","intensity":1,"effects":["light-sweep"],"duration":8,"hasSubject":true,"subjectSway":false}</script>
+    <script>
+      const cfg = JSON.parse(document.getElementById("i2m-config").textContent);
+      const D = cfg.duration;
+      const k = cfg.intensity;
+      const tl = gsap.timeline({ paused: true });
+
+      // Camera: per-layer amplitude ∝ nearness (plate 1×, subject 1.8×, particles 2.6×).
+      const moves = {
+        push:  (a) => ({ from: { scale: 1, x: 0, y: 0 }, to: { scale: 1 + 0.07 * a * k, x: 0, y: 0 } }),
+        pull:  (a) => ({ from: { scale: 1 + 0.07 * a * k, x: 0, y: 0 }, to: { scale: 1, x: 0, y: 0 } }),
+        "pan-right": (a) => ({ from: { scale: 1.02, xPercent: 2.2 * a * k }, to: { scale: 1.02, xPercent: -2.2 * a * k } }),
+        "pan-left":  (a) => ({ from: { scale: 1.02, xPercent: -2.2 * a * k }, to: { scale: 1.02, xPercent: 2.2 * a * k } }),
+        rise:  (a) => ({ from: { scale: 1.03, yPercent: 2 * a * k }, to: { scale: 1.03, yPercent: -2 * a * k } }),
+        orbit: (a) => ({ from: { scale: 1.04, xPercent: -1.6 * a * k, rotation: -0.6 * a * k }, to: { scale: 1.06, xPercent: 1.6 * a * k, rotation: 0.6 * a * k } }),
+      };
+      const move = moves[cfg.camera] || moves.push;
+      [["#plate", 1], ["#fog", 1.3], ["#subject", 1.8], ["#particles", 2.6]].forEach(([sel, depth]) => {
+        if (!document.querySelector(sel)) return;
+        const m = move(depth);
+        tl.fromTo(sel, m.from, { ...m.to, duration: D, ease: "sine.inOut" }, 0);
+      });
+      if (cfg.subjectSway && cfg.hasSubject) {
+        tl.fromTo("#subject-img", { y: 0 }, { y: -10 * k, duration: D / 4, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+      }
+
+      // Atmosphere and light.
+      if (cfg.effects.includes("fog")) tl.fromTo("#fog", { opacity: 0.3, x: 0 }, { opacity: 0.8, x: -60 * k, duration: D, ease: "none" }, 0);
+      if (cfg.effects.includes("light-sweep")) {
+        tl.fromTo("#sweep", { opacity: 0, xPercent: 0 }, { opacity: 1, duration: 0.6, ease: "power1.out" }, D * 0.25);
+        tl.to("#sweep", { xPercent: 420, duration: D * 0.55, ease: "power1.inOut" }, D * 0.25);
+      }
+      // Particles: seeded positions; snow falls, rain streaks, dust drifts up.
+      const kind = cfg.effects.includes("snow") ? "snow" : cfg.effects.includes("rain") ? "rain" : cfg.effects.includes("particles") ? "dust" : null;
+      if (kind) {
+        function mulberry32(a) { return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+        const rand = mulberry32(7);
+        const host = document.getElementById("particles");
+        const N = kind === "rain" ? 120 : 70;
+        for (let i = 0; i < N; i++) {
+          const p = document.createElement("div");
+          p.className = "pt";
+          const s = kind === "rain" ? 0.18 : 0.25 + rand() * 0.7;
+          p.style.cssText = `left:${rand() * 100}%;top:${rand() * 100}%;width:${s}cqmin;height:${kind === "rain" ? 3.2 : s}cqmin;opacity:${0.25 + rand() * 0.6}`;
+          host.appendChild(p);
+          // Travel in px from the canvas size (GSAP transforms do not take container units).
+          const H = Number(document.getElementById("i2m-root").dataset.height);
+          const W = Number(document.getElementById("i2m-root").dataset.width);
+          const dy = (kind === "dust" ? -(8 + rand() * 18) : kind === "snow" ? 25 + rand() * 30 : 120) * H / 100;
+          const dx = (kind === "rain" ? -8 : (rand() - 0.5) * 10) * W / 100;
+          tl.fromTo(p, { x: 0, y: 0 }, { x: dx, y: dy, duration: D, ease: "none" }, 0);
+        }
+      }
+
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const capHost = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          el.textContent = cue.text;
+          capHost.appendChild(el);
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.15 }, cue.start);
+          tl.to(el, { opacity: 0, duration: 0.15 }, cue.end + 0.05);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

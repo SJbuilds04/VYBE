@@ -1,0 +1,111 @@
+{
+  "vybe": "1.0.0",
+  "createdAt": "2026-11-02T23:08:01.990Z",
+  "brief": {
+    "prompt": "A cinematic 10-second teaser about light finding its shape",
+    "name": "cinematic-teaser",
+    "template": "cinematic",
+    "format": {
+      "key": "landscape",
+      "width": 1920,
+      "height": 1080,
+      "resolution": "landscape",
+      "aspect": "16:9"
+    },
+    "duration": {
+      "seconds": 10,
+      "source": "prompt"
+    },
+    "fps": 30,
+    "quality": {
+      "key": "high",
+      "hyperframes": "delivery"
+    },
+    "style": {
+      "preset": "cinematic",
+      "custom": null,
+      "source": "prompt"
+    },
+    "voice": {
+      "enabled": true,
+      "provider": "kokoro",
+      "voiceId": null,
+      "source": "flag",
+      "suggested": false
+    },
+    "music": {
+      "enabled": true
+    },
+    "sfx": {
+      "enabled": true
+    },
+    "captions": {
+      "enabled": true
+    },
+    "review": false,
+    "project": null,
+    "images": [],
+    "imageMotion": null,
+    "outDir": "..",
+    "maxFixAttempts": 3,
+    "socialCopy": false,
+    "lang": "en"
+  },
+  "template": "cinematic",
+  "stylePreset": "cinematic",
+  "paths": {
+    "project": ".",
+    "composition": "composition"
+  },
+  "scaffold": "hyperframes init",
+  "images": [],
+  "stages": {
+    "interpret": "done",
+    "direction": "pending",
+    "storyboard": "done",
+    "assets": "pending",
+    "composition": "scaffolded",
+    "audio": "done",
+    "render": "done",
+    "qc": "done",
+    "deliver": "done"
+  },
+  "qc": {
+    "attempts": 2,
+    "maxAttempts": 3,
+    "history": [
+      {
+        "attempt": 1,
+        "pass": true,
+        "failures": 0,
+        "warnings": 0,
+        "video": "renders/render-01.mp4"
+      },
+      {
+        "attempt": 2,
+        "pass": true,
+        "failures": 0,
+        "warnings": 0,
+        "video": "renders/render-02.mp4"
+      }
+    ]
+  },
+  "renders": [
+    {
+      "n": 1,
+      "output": "renders/render-01.mp4",
+      "quality": "delivery",
+      "draft": false,
+      "seconds": 54.9,
+      "at": "2026-11-03T08:56:24.690Z"
+    },
+    {
+      "n": 2,
+      "output": "renders/render-02.mp4",
+      "quality": "delivery",
+      "draft": false,
+      "seconds": 58.6,
+      "at": "2026-11-03T08:58:53.877Z"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s1-root { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 0 10cqw; gap: 2.4cqmin; }
+        #s1-tag { font-family: var(--vy-font-mono), monospace; font-size: 2.8cqmin; color: var(--vy-accent); }
+        #s1-q { font-family: var(--vy-font-display), sans-serif; font-weight: var(--vy-display-weight); font-size: 9.5cqmin; line-height: 1.02; letter-spacing: var(--vy-tracking-display); max-width: 80cqw; }
+        #s1-q em { font-style: normal; color: var(--vy-accent); }
+        #s1-under { display: block; width: 32cqmin; height: 0.6cqmin; background: var(--vy-accent-2); transform-origin: left center; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1920" data-height="1080">
+        <span id="s1-tag">// explained in 15 seconds</span>
+        <h1 id="s1-q">How does <em>it</em> actually work?</h1>
+        <span id="s1-under"></span>
+      </div>
+      <script>
+        // Hook: the question is already on screen at frame 0, then a tag types in and an underline draws.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s1-q", { y: 26 }, { y: 0, duration: 1.2, ease: "expo.out" }, 0);
+        tl.fromTo("#s1-tag", { opacity: 0, clipPath: "inset(0 100% 0 0)" }, { opacity: 1, clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "steps(24)" }, 0.3);
+        tl.fromTo("#s1-under", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "expo.inOut" }, 0.9);
+        tl.to("#s1-root", { opacity: 0, x: -60, duration: 0.5, ease: "power2.in" }, 3);
+        window.__timelines["s1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

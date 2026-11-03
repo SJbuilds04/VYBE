@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s2-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        #s2-diagram { width: min(86cqw, 140cqh); height: auto; overflow: visible; }
+        #s2-diagram text { font-family: var(--vy-font-body), sans-serif; font-weight: 600; fill: var(--vy-ink); }
+        #s2-diagram .mono { font-family: var(--vy-font-mono), monospace; font-weight: 500; fill: var(--vy-muted); }
+        .ring { fill: none; stroke: var(--vy-accent); stroke-width: 2.5; }
+        .ring.dim { stroke: var(--vy-muted); stroke-dasharray: 6 10; }
+        .leader { fill: none; stroke: var(--vy-ink); stroke-width: 2; }
+        #s2-core { fill: var(--vy-accent-2); }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1920" data-height="1080">
+        <!-- Generic "system" diagram: core, inner and outer layers, three labelled callouts. Replace with the subject's real structure. -->
+        <svg id="s2-diagram" viewBox="0 0 1600 900" aria-label="Diagram">
+          <circle id="s2-outer" class="ring dim" cx="800" cy="450" r="330" pathLength="1" />
+          <circle id="s2-mid" class="ring" cx="800" cy="450" r="220" pathLength="1" />
+          <circle id="s2-inner" class="ring" cx="800" cy="450" r="120" pathLength="1" />
+          <circle id="s2-core" cx="800" cy="450" r="46" />
+          <path id="s2-l1" class="leader" d="M 846 450 L 1060 300 L 1250 300" pathLength="1" />
+          <path id="s2-l2" class="leader" d="M 640 610 L 470 720 L 260 720" pathLength="1" />
+          <path id="s2-l3" class="leader" d="M 1020 620 L 1180 700 L 1360 700" pathLength="1" />
+          <g id="s2-t1"><text x="1260" y="292" font-size="44">The core</text><text class="mono" x="1260" y="336" font-size="30">where it starts</text></g>
+          <g id="s2-t2"><text x="250" y="712" font-size="44" text-anchor="end">Inner layer</text><text class="mono" x="250" y="756" font-size="30" text-anchor="end">what shapes it</text></g>
+          <g id="s2-t3"><text x="1370" y="692" font-size="44">Outer field</text><text class="mono" x="1370" y="736" font-size="30">what you see</text></g>
+        </svg>
+      </div>
+      <script>
+        // The diagram draws itself, then each callout's leader line draws before its label lands.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-core", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.7, ease: "back.out(2.4)" }, 0.2);
+        tl.fromTo(["#s2-inner", "#s2-mid", "#s2-outer"], { strokeDasharray: "0 1", rotation: -90, svgOrigin: "800 450" }, { strokeDasharray: "1 0", rotation: 0, duration: 1.1, ease: "power3.inOut", stagger: 0.18 }, 0.35);
+        ["1", "2", "3"].forEach((n, i) => {
+          const at = 1.5 + i * 0.75;
+          tl.fromTo(`#s2-l${n}`, { strokeDasharray: "0 1" }, { strokeDasharray: "1 0", duration: 0.5, ease: "power2.out" }, at);
+          tl.fromTo(`#s2-t${n}`, { opacity: 0, x: i === 1 ? 20 : -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, at + 0.35);
+        });
+        tl.fromTo("#s2-diagram", { scale: 0.94 }, { scale: 1.04, duration: 5, ease: "sine.inOut" }, 0);
+        tl.to("#s2-root", { opacity: 0, duration: 0.45, ease: "power2.in" }, 4.55);
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

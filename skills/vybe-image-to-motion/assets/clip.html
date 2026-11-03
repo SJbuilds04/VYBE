@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — AI clip composition</title>
+    <!--
+      Wraps an AI image-to-video clip in a HyperFrames composition so it gets the
+      VYBE treatment: slow push on the clip wrapper, optional title, captions,
+      music/SFX via `vybe audio`. The clip is AI-generated (see its
+      .provenance.json); label it as such wherever it is described.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+      #i2m-root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; background: #000; font-family: sans-serif; }
+      #clip-wrap { position: absolute; inset: 0; }
+      #clip { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #title { position: absolute; left: 7cqw; bottom: 12cqh; color: #fff; font-weight: 650; font-size: 6cqmin; letter-spacing: -0.03em; text-shadow: 0 0.4cqmin 2cqmin rgba(0,0,0,0.7); opacity: 0; }
+      #captions { position: absolute; left: 8cqw; right: 8cqw; bottom: 6cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; text-align: center; font-weight: 600; font-size: 3.1cqmin; color: #fff; opacity: 0; text-shadow: 0 0.3cqmin 1.4cqmin rgba(0,0,0,0.85); }
+    </style>
+  </head>
+  <body>
+    <div id="i2m-root" data-composition-id="main" data-start="0" data-duration="5" data-width="1920" data-height="1080">
+      <div id="clip-wrap"><video id="clip" src="assets/video/clip.mp4" muted playsinline data-start="0" data-duration="5" data-track-index="0"></video></div>
+      <h1 id="title"></h1>
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start --><!-- vybe:captions:end -->
+      <!-- vybe:audio:start --><!-- vybe:audio:end -->
+    </div>
+    <script type="application/json" id="i2m-config">{"title":"","duration":5}</script>
+    <script>
+      const cfg = JSON.parse(document.getElementById("i2m-config").textContent);
+      const tl = gsap.timeline({ paused: true });
+      // Animate the wrapper, never the timed <video>.
+      tl.fromTo("#clip-wrap", { scale: 1 }, { scale: 1.04, duration: cfg.duration, ease: "none" }, 0);
+      if (cfg.title) {
+        document.getElementById("title").textContent = cfg.title;
+        tl.fromTo("#title", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 0.4);
+      }
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const capHost = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          el.textContent = cue.text;
+          capHost.appendChild(el);
+          tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.15 }, cue.start);
+          tl.to(el, { opacity: 0, duration: 0.15 }, cue.end + 0.05);
+        });
+      }
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+1
+00:00:00,600 --> 00:00:02,600
+Every story begins in the dark.
+
+2
+00:00:04,000 --> 00:00:05,440
+Then light finds its shape.

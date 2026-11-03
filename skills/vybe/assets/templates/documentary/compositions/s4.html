@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s4-root { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4cqmin; text-align: center; background: var(--vy-bg); }
+        #s4-title { font-family: var(--vy-font-display), serif; font-weight: 300; font-size: 12cqmin; letter-spacing: 0.06em; line-height: 1; text-transform: uppercase; }
+        #s4-rule { width: 14cqmin; height: 0.3cqmin; background: var(--vy-accent); transform-origin: center; }
+        #s4-sub { font-size: 2.8cqmin; color: var(--vy-muted); letter-spacing: 0.3em; text-transform: uppercase; }
+      </style>
+      <div id="s4-root" data-composition-id="s4" data-width="1920" data-height="1080">
+        <h1 id="s4-title">The Title</h1>
+        <div id="s4-rule"></div>
+        <p id="s4-sub">A documentary</p>
+      </div>
+      <script>
+        // Title card: slow focus-pull in; the film ends on this held frame.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s4-title", { opacity: 0, filter: "blur(12px)", scale: 1.06 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 1.4, ease: "power2.out" }, 0.1);
+        tl.fromTo("#s4-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "expo.inOut" }, 0.6);
+        tl.fromTo("#s4-sub", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power1.out" }, 0.8);
+        window.__timelines["s4"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>VYBE — Cinematic</title>
+    <!--
+      VYBE template: cinematic (host)
+      Layers, back to front: Three.js space (whole film) → atmosphere → scene slots
+      (compositions/s1..s3.html) → captions → letterbox + grain.
+      Adapt: one slot per storyboard scene; keep the depth stack and the camera arc.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "Fraunces"; src: url("assets/fonts/Fraunces-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Variable.woff2") format("woff2"); font-weight: 100 900; }
+      /* vybe:tokens:start */
+      :root {
+        --vy-bg: #07080b;
+        --vy-bg-2: #12151c;
+        --vy-ink: #f2efe8;
+        --vy-muted: #9a968c;
+        --vy-accent: #d9a441;
+        --vy-accent-2: #5b8db8;
+        --vy-glow: rgba(217,164,65,0.28);
+        --vy-font-display: "Fraunces";
+        --vy-font-body: "Inter";
+        --vy-font-mono: "JetBrains Mono";
+        --vy-display-weight: 500;
+        --vy-tracking-display: -0.02em;
+      }
+      /* vybe:tokens:end */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--vy-bg); }
+      #vybe-root {
+        position: relative; width: 100%; height: 100%; overflow: hidden;
+        container-type: size; background: var(--vy-bg); color: var(--vy-ink);
+        font-family: var(--vy-font-body), sans-serif;
+      }
+      #space { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+      .atmo { position: absolute; inset: 0; pointer-events: none; }
+      #haze {
+        background:
+          radial-gradient(60cqmax 40cqmax at 50% 62%, var(--vy-glow), transparent 70%),
+          radial-gradient(80cqmax 50cqmax at 15% 10%, rgba(91,141,184,0.16), transparent 70%);
+        opacity: 0;
+      }
+      #vignette { background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.78) 100%); }
+      .slot { position: absolute; inset: 0; }
+      .bar { position: absolute; left: 0; right: 0; height: 11cqh; background: #000; z-index: 20; }
+      #bar-top { top: 0; transform-origin: top center; }
+      #bar-bot { bottom: 0; transform-origin: bottom center; }
+      #grain { position: absolute; inset: -10%; width: 120%; height: 120%; z-index: 21; opacity: 0.07; mix-blend-mode: overlay; }
+      /* Word-synced captions (filled by `vybe audio` when narration exists), above the letterbox. */
+      #captions { position: absolute; left: 8cqw; right: 8cqw; bottom: 14cqh; z-index: 22; display: flex; justify-content: center; pointer-events: none; }
+      .cap { position: absolute; bottom: 0; max-width: 100%; text-align: center; font-family: var(--vy-font-body), sans-serif; font-weight: 600; font-size: 3.1cqmin; line-height: 1.25; opacity: 0; text-shadow: 0 0.3cqmin 1.6cqmin rgba(0,0,0,0.8); }
+      .cap .cw { display: inline-block; opacity: 0.45; margin: 0 0.18em; }
+    </style>
+  </head>
+  <body>
+    <div id="vybe-root" data-composition-id="main" data-start="0" data-duration="10" data-width="1920" data-height="1080">
+      <canvas id="space" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      <div id="haze" class="atmo"></div>
+      <div id="vignette" class="atmo"></div>
+
+      <div id="s1" class="slot" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="3.6" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" class="slot" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3.6" data-duration="3.2" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" class="slot" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="6.8" data-duration="3.2" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="captions" aria-hidden="true"></div>
+      <!-- vybe:captions:start -->
+      <script type="application/json" id="vybe-captions">[{"start":0.6,"end":2.6,"text":"Every story begins in the dark.","words":[{"id":"w0","text":"Every","start":0.6,"end":1.08},{"id":"w1","text":"story","start":1.08,"end":1.4},{"id":"w2","text":"begins","start":1.4,"end":1.88},{"id":"w3","text":"in","start":1.88,"end":2.04},{"id":"w4","text":"the","start":2.04,"end":2.12},{"id":"w5","text":"dark.","start":2.12,"end":2.6}]},{"start":4,"end":5.44,"text":"Then light finds its shape.","words":[{"id":"w0","text":"Then","start":4,"end":4.32},{"id":"w1","text":"light","start":4.32,"end":4.64},{"id":"w2","text":"finds","start":4.64,"end":4.96},{"id":"w3","text":"its","start":4.96,"end":5.12},{"id":"w4","text":"shape.","start":5.12,"end":5.44}]}]</script>
+      <!-- vybe:captions:end -->
+      <!-- vybe:audio:start -->
+      <audio id="vo-s1" src="assets/audio/voice/s1.wav" data-start="0.6" data-duration="2.155" data-track-index="11" data-volume="1"></audio>
+      <audio id="vo-s2" src="assets/audio/voice/s2.wav" data-start="4" data-duration="1.749" data-track-index="11" data-volume="1"></audio>
+      <audio id="music-bed" src="assets/audio/music/bed.wav" data-start="0" data-duration="10" data-track-index="10" data-volume="0.55" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":1.2,"v":1},{"t":1.45,"v":0.28},{"t":3.105,"v":0.28},{"t":3.555,"v":1},{"t":3.75,"v":1},{"t":4,"v":0.28},{"t":6.099,"v":0.28},{"t":6.549,"v":1},{"t":7.8,"v":1},{"t":10,"v":0}]}]}'></audio>
+      <audio id="sfx-1-whoosh-cinematic" src="assets/audio/sfx/whoosh-cinematic.mp3" data-start="2.9" data-duration="5.54" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-2-sparkle" src="assets/audio/sfx/sparkle.mp3" data-start="4.1" data-duration="1.8" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="sfx-3-impact-bass-1" src="assets/audio/sfx/impact-bass-1.mp3" data-start="7" data-duration="2.12" data-track-index="21" data-volume="0.4"></audio>
+      <!-- vybe:audio:end -->
+
+      <div id="bar-top" class="bar"></div>
+      <div id="bar-bot" class="bar"></div>
+      <svg id="grain" viewBox="0 0 200 200" preserveAspectRatio="none" aria-hidden="true">
+        <filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" stitchTiles="stitch" /></filter>
+        <rect width="200" height="200" filter="url(#noise)" />
+      </svg>
+    </div>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.181.2/+esm";
+
+      // Deterministic PRNG: identical frames on every render.
+      function mulberry32(a) {
+        return () => {
+          a |= 0; a = (a + 0x6d2b79f5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      const rand = mulberry32(1337);
+      const root = document.getElementById("vybe-root");
+      const W = Number(root.dataset.width), H = Number(root.dataset.height);
+      const css = getComputedStyle(document.documentElement);
+      const token = (name, fallback) => css.getPropertyValue(name).trim() || fallback;
+      const accent = new THREE.Color(token("--vy-accent", "#d9a441"));
+      const accent2 = new THREE.Color(token("--vy-accent-2", "#5b8db8"));
+
+      const canvas = document.getElementById("space");
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer.setPixelRatio(1);
+      renderer.setSize(W, H, false);
+      renderer.setClearColor(new THREE.Color(token("--vy-bg", "#07080b")), 1);
+
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x000000, 0.045);
+      const camera = new THREE.PerspectiveCamera(W > H ? 42 : 62, W / H, 0.1, 200);
+
+      // Dust field spread through deep z so the dolly produces real parallax.
+      const COUNT = 2600;
+      const pos = new Float32Array(COUNT * 3);
+      const col = new Float32Array(COUNT * 3);
+      const white = new THREE.Color(1, 1, 1);
+      for (let i = 0; i < COUNT; i++) {
+        pos[i * 3] = (rand() - 0.5) * 60;
+        pos[i * 3 + 1] = (rand() - 0.5) * 34;
+        // Start beyond the camera's furthest dolly point (z = -8) so no particle ever
+        // passes the lens and balloons into a giant sprite.
+        pos[i * 3 + 2] = -12 - rand() * 80;
+        const c = accent.clone().lerp(accent2, rand()).lerp(white, rand() * 0.6);
+        col.set([c.r, c.g, c.b], i * 3);
+      }
+      const dustGeo = new THREE.BufferGeometry();
+      dustGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      dustGeo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      // Soft round sprite: Points are square without an alpha map.
+      const spriteCanvas = document.createElement("canvas");
+      spriteCanvas.width = spriteCanvas.height = 64;
+      const g = spriteCanvas.getContext("2d");
+      const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, "rgba(255,255,255,1)");
+      grad.addColorStop(0.35, "rgba(255,255,255,0.55)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = grad;
+      g.fillRect(0, 0, 64, 64);
+      const sprite = new THREE.CanvasTexture(spriteCanvas);
+      const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: 0.16, map: sprite, alphaTest: 0.01, vertexColors: true, transparent: true, opacity: 0.95, depthWrite: false, blending: THREE.AdditiveBlending }));
+      scene.add(dust);
+
+      // Hero: a dark metallic orb that light gradually "finds", with an emissive halo ring.
+      const orb = new THREE.Mesh(
+        new THREE.SphereGeometry(2.2, 96, 64),
+        new THREE.MeshStandardMaterial({ color: 0x111318, roughness: 0.35, metalness: 0.6, emissive: accent.clone().multiplyScalar(0.02) }),
+      );
+      orb.position.set(0, -0.4, -26);
+      scene.add(orb);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(3.3, 0.025, 16, 200), new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0 }));
+      ring.position.copy(orb.position);
+      ring.rotation.x = Math.PI * 0.42;
+      scene.add(ring);
+      const key = new THREE.PointLight(accent, 0, 60, 1.6);
+      key.position.set(-6, 5, -18);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(accent2, 0);
+      rim.position.set(4, 2, -40);
+      scene.add(rim);
+      scene.add(new THREE.HemisphereLight(0x334455, 0x050505, 0.35));
+
+      const clamp01 = (x) => Math.min(1, Math.max(0, x));
+      const easeOut = (x) => 1 - Math.pow(1 - clamp01(x), 3);
+      const smooth = (x) => { x = clamp01(x); return x * x * (3 - 2 * x); };
+      const DURATION = Number(root.dataset.duration);
+
+      function renderAt(t) {
+        // Camera arc: dolly-in (act 1) → lateral truck (act 2) → crane-up push (act 3).
+        const p = t / DURATION;
+        camera.position.set(
+          Math.sin(smooth((p - 0.34) / 0.36) * Math.PI) * 2.2,
+          smooth((p - 0.66) / 0.34) * 1.4,
+          6 - easeOut(p) * 14,
+        );
+        camera.lookAt(camera.position.x * 0.3, -0.4 + camera.position.y * 0.4, -26);
+        dust.rotation.z = t * 0.012;
+        const lightUp = smooth((p - 0.26) / 0.24);
+        key.intensity = lightUp * 520;
+        rim.intensity = lightUp * 2.4;
+        ring.material.opacity = smooth((p - 0.68) / 0.12) * 0.85;
+        ring.rotation.z = t * 0.25;
+        ring.scale.setScalar(1 + smooth((p - 0.68) / 0.2) * 0.12);
+        orb.rotation.y = t * 0.15;
+        renderer.render(scene, camera);
+      }
+      window.addEventListener("hf-seek", (e) => renderAt(e.detail.time));
+      renderAt(window.__hfThreeTime || 0);
+    </script>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.to("#haze", { opacity: 1, duration: 3, ease: "sine.inOut" }, 2.4);
+      tl.fromTo("#grain", { x: 0, y: 0 }, { x: -24, y: 18, duration: 10, ease: "steps(40)" }, 0);
+      tl.fromTo(".bar", { scaleY: 1.6 }, { scaleY: 1, duration: 1.6, ease: "expo.out" }, 0);
+
+      // Captions: one element per cue, each word lights up at its transcribed time.
+      const capData = document.getElementById("vybe-captions");
+      if (capData) {
+        const host = document.getElementById("captions");
+        JSON.parse(capData.textContent).forEach((cue, i) => {
+          const el = document.createElement("div");
+          el.className = "cap";
+          el.id = `cap-${i}`;
+          const words = cue.words && cue.words.length ? cue.words : [{ text: cue.text, start: cue.start }];
+          el.innerHTML = words.map((w, j) => `<span class="cw" id="cap-${i}-${j}">${w.text.replace(/</g, "&lt;")}</span>`).join(" ");
+          host.appendChild(el);
+          tl.fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, cue.start);
+          words.forEach((w, j) => tl.to(`#cap-${i}-${j}`, { opacity: 1, duration: 0.08 }, w.start));
+          tl.to(el, { opacity: 0, duration: 0.15 }, cue.end + 0.05);
+        });
+      }
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

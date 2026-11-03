@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s2-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(80cqmax 60cqmax at 30% 40%, var(--vy-bg-2), var(--vy-bg) 75%); }
+        #s2-block { max-width: 70cqw; padding: 0 4cqw; }
+        #s2-mark { font-family: var(--vy-font-display), serif; font-size: 16cqmin; line-height: 0.6; color: var(--vy-accent); display: block; height: 7cqmin; }
+        #s2-quote { font-family: var(--vy-font-display), serif; font-style: italic; font-weight: 400; font-size: 6cqmin; line-height: 1.18; }
+        #s2-quote .w { display: inline-block; }
+        #s2-attr { margin-top: 3cqmin; font-size: 2.8cqmin; color: var(--vy-muted); letter-spacing: 0.12em; text-transform: uppercase; }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1920" data-height="1080">
+        <div id="s2-block">
+          <span id="s2-mark">“</span>
+          <p id="s2-quote"><span class="w">The</span> <span class="w">future</span> <span class="w">arrived</span> <span class="w">quietly,</span> <span class="w">and</span> <span class="w">then</span> <span class="w">all</span> <span class="w">at</span> <span class="w">once.</span></p>
+          <p id="s2-attr">— Name, Role, Year</p>
+        </div>
+      </div>
+      <script>
+        // Quote: the mark lands, words surface at reading pace, attribution follows.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-mark", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.1);
+        tl.fromTo("#s2-quote .w", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.16 }, 0.35);
+        tl.fromTo("#s2-attr", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power1.out" }, 2.0);
+        tl.fromTo("#s2-block", { scale: 1 }, { scale: 1.03, duration: 4.6, ease: "none" }, 0);
+        tl.to("#s2-block", { opacity: 0, duration: 0.45, ease: "power1.in" }, 4.1);
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

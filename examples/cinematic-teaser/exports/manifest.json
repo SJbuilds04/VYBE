@@ -1,0 +1,27 @@
+{
+  "final": "exports/final.mp4",
+  "thumbnail": "exports/thumbnail.png",
+  "captions": "exports/captions.srt",
+  "source": {
+    "composition": "composition",
+    "render": "renders/render-02.mp4"
+  },
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "duration": 10
+  },
+  "loudness": {
+    "normalized": true,
+    "inputI": -15.46,
+    "inputTP": -2.97,
+    "outputI": -14.01,
+    "outputTP": -1.53
+  },
+  "qc": {
+    "attempt": 2,
+    "technicalPass": true
+  },
+  "missingDocs": [],
+  "finalizedAt": "2026-11-03T08:59:07.546Z"
+}

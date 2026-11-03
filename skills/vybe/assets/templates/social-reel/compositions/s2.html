@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s2-root { position: absolute; inset: 0; }
+        .s2-card { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 14cqw 0 6cqw; gap: 3cqmin; }
+        .s2-card:nth-child(1) { background: var(--vy-bg); }
+        .s2-card:nth-child(2) { background: var(--vy-accent-2); }
+        .s2-card:nth-child(3) { background: var(--vy-ink); color: var(--vy-bg); }
+        .s2-n { font-family: var(--vy-font-body), sans-serif; font-weight: 700; font-size: 6cqmin; color: var(--vy-accent); }
+        .s2-card:nth-child(3) .s2-n { color: var(--vy-accent-2); }
+        .s2-w { font-family: var(--vy-font-display), sans-serif; font-size: 17cqmin; line-height: 0.95; text-transform: uppercase; }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1080" data-height="1920">
+        <div class="s2-card" id="s2-c1"><span class="s2-n">01</span><span class="s2-w">First point</span></div>
+        <div class="s2-card" id="s2-c2"><span class="s2-n">02</span><span class="s2-w">Second point</span></div>
+        <div class="s2-card" id="s2-c3"><span class="s2-n">03</span><span class="s2-w">Third point</span></div>
+      </div>
+      <script>
+        // Rapid cards: each wipes in from a different edge on a ~1.1s beat.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s2-c1", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.3, ease: "power3.out" }, 0);
+        tl.fromTo("#s2-c2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.3, ease: "power3.out" }, 1.1);
+        tl.fromTo("#s2-c3", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.3, ease: "power3.out" }, 2.2);
+        // Hide each card once the next fully covers it (no slivers at clip edges).
+        tl.fromTo("#s2-c1", { opacity: 1 }, { opacity: 0, duration: 0.01 }, 1.42);
+        tl.fromTo("#s2-c2", { opacity: 1 }, { opacity: 0, duration: 0.01 }, 2.52);
+        ["#s2-c1", "#s2-c2", "#s2-c3"].forEach((c, i) => {
+          tl.fromTo(`${c} .s2-w`, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "expo.out" }, i * 1.1 + 0.1);
+          tl.fromTo(`${c} .s2-n`, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power3.out" }, i * 1.1 + 0.05);
+        });
+        window.__timelines["s2"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s4-root { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10cqh; gap: 2.2cqmin; text-align: center; }
+        #s4-name { font-family: var(--vy-font-display), sans-serif; font-weight: var(--vy-display-weight); font-size: 7.4cqmin; letter-spacing: var(--vy-tracking-display); line-height: 1; }
+        #s4-tag { font-size: 3.2cqmin; color: var(--vy-muted); }
+        #s4-cta { margin-top: 1.4cqmin; padding: 1.5cqmin 4cqmin; border-radius: 99cqmin; background: var(--vy-accent); color: #fff; font-size: 2.8cqmin; font-weight: 600; }
+      </style>
+      <div id="s4-root" data-composition-id="s4" data-width="1920" data-height="1080">
+        <h2 id="s4-name">Product Name</h2>
+        <p id="s4-tag">The tagline that sums it up.</p>
+        <div id="s4-cta">Available now</div>
+      </div>
+      <script>
+        // End card: lockup builds under the settled product; the CTA lands last and holds.
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s4-name", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out" }, 0.1);
+        tl.fromTo("#s4-tag", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.25);
+        tl.fromTo("#s4-cta", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.7, ease: "back.out(2)" }, 0.35);
+        window.__timelines["s4"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

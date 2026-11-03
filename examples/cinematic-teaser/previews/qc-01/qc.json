@@ -1,0 +1,75 @@
+{
+  "attempt": 1,
+  "at": "2026-11-03T08:56:32.485Z",
+  "pass": true,
+  "failures": [],
+  "warnings": [],
+  "facts": {
+    "file": "renders/render-01.mp4",
+    "sizeMB": 3.54,
+    "duration": 10,
+    "expectedDuration": 10,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "pixFmt": "yuv420p",
+    "audio": {
+      "codec": "aac",
+      "duration": 10,
+      "channels": 2,
+      "sampleRate": "48000"
+    }
+  },
+  "loudness": {
+    "integratedLUFS": -15.8,
+    "lra": 3.5,
+    "truePeakDBFS": -3
+  },
+  "black": [],
+  "frozen": [],
+  "silences": [],
+  "frames": [
+    {
+      "t": 1.8,
+      "label": "s1-mid",
+      "file": "previews/qc-01/01-s1-mid-1.8s.png"
+    },
+    {
+      "t": 5.2,
+      "label": "s2-mid",
+      "file": "previews/qc-01/02-s2-mid-5.2s.png"
+    },
+    {
+      "t": 8.4,
+      "label": "s3-mid",
+      "file": "previews/qc-01/03-s3-mid-8.4s.png"
+    },
+    {
+      "t": 9.9,
+      "label": "last-frame",
+      "file": "previews/qc-01/04-last-frame-9.9s.png"
+    },
+    {
+      "t": 3.48,
+      "label": "cut-s2-before",
+      "file": "previews/qc-01/05-cut-s2-before-3.48s.png"
+    },
+    {
+      "t": 3.75,
+      "label": "cut-s2-after",
+      "file": "previews/qc-01/06-cut-s2-after-3.75s.png"
+    },
+    {
+      "t": 6.68,
+      "label": "cut-s3-before",
+      "file": "previews/qc-01/07-cut-s3-before-6.68s.png"
+    },
+    {
+      "t": 6.95,
+      "label": "cut-s3-after",
+      "file": "previews/qc-01/08-cut-s3-after-6.95s.png"
+    }
+  ],
+  "contactSheet": "previews/qc-01/contact-sheet.jpg"
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #s3-root { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 14cqw 0 6cqw; gap: 4cqmin; background: var(--vy-bg-2); }
+        #s3-num { font-family: var(--vy-font-display), sans-serif; font-size: 32cqmin; line-height: 0.9; color: var(--vy-accent); font-variant-numeric: tabular-nums; }
+        #s3-label { font-weight: 700; font-size: 6.4cqmin; line-height: 1.1; }
+        #s3-bars { display: flex; align-items: flex-end; gap: 2.4cqmin; height: 34cqmin; margin-top: 2cqmin; }
+        .s3-bar { flex: 1; height: 100%; background: var(--vy-accent-2); border-radius: 1.2cqmin 1.2cqmin 0 0; transform-origin: bottom center; }
+        .s3-bar.hi { background: var(--vy-accent); }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1080" data-height="1920">
+        <div id="s3-num">0%</div>
+        <div id="s3-label">of people never knew this.</div>
+        <div id="s3-bars"><div class="s3-bar" style="height:35%"></div><div class="s3-bar" style="height:52%"></div><div class="s3-bar" style="height:44%"></div><div class="s3-bar hi" style="height:100%"></div></div>
+      </div>
+      <script>
+        // Proof: stat counts up while the bars grow; the winning bar overshoots.
+        const tl = gsap.timeline({ paused: true });
+        const v = { n: 0 };
+        const el = document.getElementById("s3-num");
+        tl.fromTo(v, { n: 0 }, { n: 87, duration: 1.4, ease: "expo.out", onUpdate: () => { el.textContent = Math.round(v.n) + "%"; } }, 0.1);
+        tl.fromTo("#s3-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.35);
+        tl.fromTo("#s3-root .s3-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.7, ease: "back.out(1.8)", stagger: 0.12 }, 0.5);
+        window.__timelines["s3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

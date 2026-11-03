@@ -1,0 +1,82 @@
+[
+  {
+    "start": 0.6,
+    "end": 2.6,
+    "text": "Every story begins in the dark.",
+    "words": [
+      {
+        "id": "w0",
+        "text": "Every",
+        "start": 0.6,
+        "end": 1.08
+      },
+      {
+        "id": "w1",
+        "text": "story",
+        "start": 1.08,
+        "end": 1.4
+      },
+      {
+        "id": "w2",
+        "text": "begins",
+        "start": 1.4,
+        "end": 1.88
+      },
+      {
+        "id": "w3",
+        "text": "in",
+        "start": 1.88,
+        "end": 2.04
+      },
+      {
+        "id": "w4",
+        "text": "the",
+        "start": 2.04,
+        "end": 2.12
+      },
+      {
+        "id": "w5",
+        "text": "dark.",
+        "start": 2.12,
+        "end": 2.6
+      }
+    ]
+  },
+  {
+    "start": 4,
+    "end": 5.44,
+    "text": "Then light finds its shape.",
+    "words": [
+      {
+        "id": "w0",
+        "text": "Then",
+        "start": 4,
+        "end": 4.32
+      },
+      {
+        "id": "w1",
+        "text": "light",
+        "start": 4.32,
+        "end": 4.64
+      },
+      {
+        "id": "w2",
+        "text": "finds",
+        "start": 4.64,
+        "end": 4.96
+      },
+      {
+        "id": "w3",
+        "text": "its",
+        "start": 4.96,
+        "end": 5.12
+      },
+      {
+        "id": "w4",
+        "text": "shape.",
+        "start": 5.12,
+        "end": 5.44
+      }
+    ]
+  }
+]

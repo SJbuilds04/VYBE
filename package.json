@@ -1,0 +1,38 @@
+{
+  "name": "vybe-skill",
+  "version": "1.0.0",
+  "description": "An autonomous AI motion graphics skill that turns natural-language prompts into cinematic, animated and professionally rendered videos using HyperFrames and modern creative technologies.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "SJ BUILDS",
+  "homepage": "https://github.com/SJbuilds04/VYBE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SJbuilds04/VYBE.git"
+  },
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "cursor",
+    "opencode",
+    "hyperframes",
+    "motion-graphics",
+    "video-generation",
+    "gsap",
+    "threejs"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "vybe": "node skills/vybe/scripts/vybe.mjs",
+    "link": "node scripts/link-skills.mjs",
+    "validate": "node scripts/validate-skills.mjs",
+    "test": "node --test \"tests/unit/*.test.mjs\"",
+    "test:integration": "node --test --test-concurrency=1 \"tests/integration/*.test.mjs\"",
+    "test:render": "node --test tests/integration/render.test.mjs",
+    "test:all": "node scripts/validate-skills.mjs && node --test \"tests/unit/*.test.mjs\" && node --test --test-concurrency=1 \"tests/integration/*.test.mjs\""
+  }
+}
