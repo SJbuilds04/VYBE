@@ -19,16 +19,23 @@ export function planFromStoryboard(sb, brief, state) {
   const sfx = [];
   for (const s of sb.scenes) {
     if (brief.voice.enabled && s.narration && s.narration.trim()) {
-      lines.push({ id: s.id, text: s.narration.trim(), start: +(t + (s.narrationOffset ?? 0.3)).toFixed(3) });
+      lines.push({ id: s.id, text: s.narration.trim(), start: +(t + (s.narrationOffset ?? 0.3)).toFixed(3), voiceId: s.voice, fx: s.voiceFx, speed: s.voiceSpeed });
     }
     for (const fx of s.sfx || []) sfx.push({ name: fx.name, at: +(t + (fx.at || 0)).toFixed(3), volume: fx.volume });
     t += Number(s.duration);
+  }
+  // Scenes may set "musicLevel" (0–1): a hard drop at the scene start, recovery after it.
+  const levels = [];
+  let acc = 0;
+  for (const s of sb.scenes) {
+    if (typeof s.musicLevel === "number") levels.push({ start: +acc.toFixed(3), end: +(acc + Number(s.duration)).toFixed(3), level: Math.max(0, Math.min(1, s.musicLevel)) });
+    acc += Number(s.duration);
   }
   const mood = (typeof sb.music === "object" && sb.music?.mood) || (typeof sb.music === "string" && sb.music) || brief.style.preset || state.template;
   return {
     duration: +t.toFixed(3),
     voice: brief.voice.enabled ? { provider: brief.voice.provider, voiceId: brief.voice.voiceId, speed: 1, lang: brief.lang, lines } : null,
-    music: brief.music.enabled ? { provider: "auto", mood, query: typeof sb.music === "object" ? sb.music.query || sb.music.mood : mood, bpm: sb.music?.bpm } : null,
+    music: brief.music.enabled ? { provider: "auto", mood, query: typeof sb.music === "object" ? sb.music.query || sb.music.mood : mood, bpm: sb.music?.bpm, levels } : null,
     sfx: brief.sfx.enabled ? sfx : [],
     captions: brief.captions.enabled,
   };
@@ -82,6 +89,29 @@ function parseTranscribe(r) {
 
 // ── voice ───────────────────────────────────────────────────────────────────
 
+// Character treatments applied after synthesis (FFmpeg filter chains).
+export const VOICE_FX = {
+  // Synthetic ship computer: slight chorus/flange, band-limited, crisp.
+  ai: "highpass=f=180,lowpass=f=7000,chorus=0.7:0.9:40:0.4:0.25:2,aecho=0.8:0.5:18:0.3",
+  // Distorted transmission: pitched down, phone band, bit-crushed, wavering.
+  radio: "asetrate=24000*0.86,aresample=24000,atempo=1.163,highpass=f=380,lowpass=f=2700,acrusher=bits=7:mix=0.45:mode=log,tremolo=f=7:d=0.35,aecho=0.8:0.4:60:0.25,volume=1.6",
+  // Child: pitched up, slightly slowed back, with an eerie distant reflection.
+  child: "asetrate=24000*1.17,aresample=24000,atempo=0.92,aecho=0.8:0.55:90|170:0.32|0.2,highpass=f=220",
+  // Hologram: band-limited, chorused, flickering, with a hall tail.
+  hologram: "highpass=f=240,lowpass=f=6200,chorus=0.6:0.85:25|40:0.35|0.25:0.3|0.4:2|1.3,tremolo=f=11:d=0.12,aecho=0.8:0.6:120|240:0.3|0.18",
+  // Suit comms: mild band limit and a short room reflection.
+  helmet: "highpass=f=160,lowpass=f=5200,aecho=0.8:0.35:12:0.25",
+};
+
+function applyVoiceFx(file, fx) {
+  const chain = VOICE_FX[fx];
+  if (!chain) return false;
+  const tmp = file.replace(/(\.\w+)$/, ".fx$1");
+  const r = run("ffmpeg", ["-y", "-hide_banner", "-loglevel", "error", "-i", file, "-af", chain, tmp]);
+  if (r.ok) fs.renameSync(tmp, file);
+  return r.ok;
+}
+
 function kokoroLine(line, outFile, { voiceId, speed, lang }) {
   const args = ["--yes", "hyperframes", "tts", line.text, "-o", outFile, "--voice", voiceId, "--json"];
   if (speed && speed !== 1) args.push("--speed", String(speed));
@@ -120,10 +150,11 @@ function produceVoice(plan, ctx) {
     report.voice.voiceId = voiceId;
     for (const line of plan.lines) {
       const out = path.join(voiceDir, `${line.id}.wav`);
-      const res = kokoroLine(line, out, { voiceId, speed: plan.speed, lang: plan.lang });
+      const res = kokoroLine(line, out, { voiceId: line.voiceId || voiceId, speed: line.speed || plan.speed, lang: plan.lang });
       if (!res.ok) { report.voice.anomalies.push(`line ${line.id}: Kokoro failed — ${res.error}`); continue; }
+      if (line.fx && !applyVoiceFx(out, line.fx)) report.voice.anomalies.push(`line ${line.id}: voice fx "${line.fx}" failed or unknown (${Object.keys(VOICE_FX).join(", ")})`);
       normalizeLoudness(out, VOICE_LUFS);
-      report.voice.lines.push({ id: line.id, text: line.text, start: line.start, path: out, duration_s: +mediaDuration(out).toFixed(3) });
+      report.voice.lines.push({ id: line.id, text: line.text, start: line.start, path: out, duration_s: +mediaDuration(out).toFixed(3), voice: line.voiceId || voiceId, fx: line.fx || null });
     }
   } else {
     if (!credentialPresent(provider)) {
@@ -164,7 +195,7 @@ function produceMusic(plan, duration, ctx) {
     if (p === "procedural") {
       const out = path.join(musicDir, "bed.wav");
       const r = generateMusic({ mood: plan.mood, duration: duration + 0.5, out, bpm: plan.bpm });
-      if (r.ok) { Object.assign(report.music, { provider: "vybe-procedural", path: out, mood: r.mood, bpm: r.bpm, duration_s: r.duration_s, license: r.license }); return; }
+      if (r.ok) { Object.assign(report.music, { provider: "vybe-procedural", path: out, mood: r.mood, bpm: r.bpm, duration_s: r.duration_s, license: r.license, levels: plan.levels || [] }); return; }
       report.music.anomalies.push(`procedural: ${r.error}`);
       continue;
     }
@@ -277,7 +308,7 @@ function rel(compDir, p) {
 }
 
 /** Volume automation for the music bed: fade in/out + duck under each narration line. */
-export function musicAutomation(duration, voiceLines, { fadeIn = 1.2, fadeOut = 2.2, duck = DUCK_LEVEL } = {}) {
+export function musicAutomation(duration, voiceLines, { fadeIn = 1.2, fadeOut = 2.2, duck = DUCK_LEVEL, levels = [] } = {}) {
   const pts = [{ t: 0, v: 0 }, { t: fadeIn, v: 1 }];
   for (const l of voiceLines) {
     const a = Math.max(fadeIn, l.start - 0.25);
@@ -290,7 +321,18 @@ export function musicAutomation(duration, voiceLines, { fadeIn = 1.2, fadeOut = 
   // Keep points strictly increasing in time.
   const clean = [];
   for (const p of pts) if (!clean.length || p.t > clean[clean.length - 1].t) clean.push(p);
-  return { version: 1, lanes: [{ target: "volume", points: clean }] };
+  if (!levels.length) return { version: 1, lanes: [{ target: "volume", points: clean }] };
+  // Multiply the envelope by scene levels: 40 ms drop into a scene, 0.3 s recovery after it.
+  const baseAt = (t) => {
+    if (t <= clean[0].t) return clean[0].v;
+    for (let i = 1; i < clean.length; i++) if (t <= clean[i].t) { const a = clean[i - 1], b = clean[i]; return a.v + ((b.v - a.v) * (t - a.t)) / (b.t - a.t); }
+    return clean[clean.length - 1].v;
+  };
+  const levelAt = (t) => levels.reduce((m, w) => (t >= w.start && t <= w.end ? Math.min(m, w.level) : m), 1);
+  const times = new Set(clean.map((p) => p.t));
+  for (const w of levels) for (const t of [w.start - 0.04, w.start, w.end, w.end + 0.3]) if (t > 0 && t < duration) times.add(+t.toFixed(3));
+  const points = [...times].sort((a, b) => a - b).map((t) => ({ t, v: +(baseAt(t) * levelAt(t)).toFixed(3) }));
+  return { version: 1, lanes: [{ target: "volume", points }] };
 }
 
 /** Greedy lane allocation: clips that overlap in time never share a track. */
@@ -313,7 +355,7 @@ export function audioTracksHtml(report, compDir, duration) {
     out.push(`<audio id="vo-${l.id}" src="${rel(compDir, l.path)}" data-start="${l.start}" data-duration="${l.duration_s}" data-track-index="${voiceLanes[i]}" data-volume="1"></audio>`);
   });
   if (report.music?.path) {
-    const auto = JSON.stringify(musicAutomation(duration, lines));
+    const auto = JSON.stringify(musicAutomation(duration, lines, { levels: report.music.levels || [] }));
     const vol = lines.length ? 0.55 : 0.8;
     out.push(`<audio id="music-bed" src="${rel(compDir, report.music.path)}" data-start="0" data-duration="${duration}" data-track-index="10" data-volume="${vol}" data-automation='${auto}'></audio>`);
   }
@@ -351,7 +393,8 @@ export async function audioCommand(projectDir, { planFile, only } = {}) {
   }
   const indexFile = path.join(compDir, "index.html");
   const html = fs.readFileSync(indexFile, "utf8");
-  const duration = rootDuration(html) || plan.duration || brief.duration.seconds;
+  const duration = plan.duration || rootDuration(html) || brief.duration.seconds;
+  if (plan.duration && rootDuration(html) && Math.abs(rootDuration(html) - plan.duration) > 0.05) log(`note: composition root is ${rootDuration(html)}s but the storyboard totals ${plan.duration}s; audio follows the storyboard — set the root data-duration to match.`);
   const want = (k) => !only || only.includes(k);
   const doctorHints = { musicgen: run("python", ["-c", "import transformers, torch, soundfile"], { timeout: 60000 }).ok };
 
@@ -378,7 +421,8 @@ export async function audioCommand(projectDir, { planFile, only } = {}) {
 
   // Wire into the composition when the template exposes markers.
   const tracks = audioTracksHtml(report, compDir, duration);
-  let next = inject(html, "audio", tracks || "<!-- no audio -->");
+  // Re-read: generation can take minutes and the composition may have been edited meanwhile.
+  let next = inject(fs.readFileSync(indexFile, "utf8"), "audio", tracks || "<!-- no audio -->");
   let wired = Boolean(next);
   if (next && report.captions?.path) {
     const cues = readJson(report.captions.path);

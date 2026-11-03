@@ -282,3 +282,23 @@ test("state on disk never stores absolute paths; loadState restores them", () =>
   assert.ok(!raw.includes(JSON.stringify(out).slice(1, -1)) && !raw.includes(out), "no absolute output dir in vybe.json");
   assert.equal(path.isAbsolute(loadState(s.paths.project).paths.composition), true);
 });
+
+// ── multi-character films ───────────────────────────────────────────────────
+test("screenplay dialogue turns voice on; per-line voice, fx, speed reach the plan", () => {
+  assert.equal(parseInvocation("SHIP AI: Warning. Unknown signal detected.").brief.voice.enabled, true);
+  const sb = { scenes: [scene("a", 4, { narration: "Hello.", voice: "am_adam", voiceFx: "radio", voiceSpeed: 0.8 })] };
+  const line = planFromStoryboard(sb, parseInvocation("x --voice").brief, { template: "cinematic" }).voice.lines[0];
+  assert.deepEqual([line.voiceId, line.fx, line.speed], ["am_adam", "radio", 0.8]);
+});
+
+test("musicLevel scenes shape the bed: silence inside, recovery after", () => {
+  const sb = { scenes: [scene("a", 10), scene("b", 2, { musicLevel: 0, black: true }), scene("c", 8)] };
+  const levels = planFromStoryboard(sb, parseInvocation("x").brief, { template: "cinematic" }).music.levels;
+  assert.deepEqual(levels, [{ start: 10, end: 12, level: 0 }]);
+  const pts = musicAutomation(20, [], { levels }).lanes[0].points;
+  const at = (t) => pts.find((p) => p.t === t)?.v;
+  assert.equal(at(10), 0);
+  assert.equal(at(12), 0);
+  assert.ok(at(9.96) > 0.9, "full level just before the cut");
+  for (let i = 1; i < pts.length; i++) assert.ok(pts[i].t > pts[i - 1].t);
+});

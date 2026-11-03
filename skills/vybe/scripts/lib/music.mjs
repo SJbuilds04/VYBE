@@ -22,9 +22,11 @@ export const MOODS = {
   corporate: { bpm: 108, prog: ["C", "G", "Am", "F"], beatsPerChord: 4, drums: "soft", bright: 6000 },
   energetic: { bpm: 122, prog: ["Am", "Am", "F", "G"], beatsPerChord: 4, drums: "full", bright: 7000 },
   futuristic: { bpm: 116, prog: ["Dm", "Dm", "F", "Em"], beatsPerChord: 4, drums: "full", detune: 0.008, bright: 5400 },
+  suspense: { bpm: 56, prog: ["Am", "Am", "F", "E"], beatsPerChord: 8, drums: false, swell: true, detune: 0.006, bright: 1700 },
 };
 
 const MOOD_WORDS = [
+  ["suspense", /suspense|thriller|horror|ominous|tense|mystery|eerie|dread|sci-?fi drama|dark ambient/],
   ["cinematic", /cinematic|orchestr|epic|trailer|dramatic|documentar/],
   ["emotional", /emotion|sad|tender|nostalg|heartfelt|melanch/],
   ["futuristic", /futur|cyber|synth|neon|dark electronic|sci-?fi/],
@@ -125,6 +127,14 @@ const SFX_RECIPES = {
   // Ball kick: short leather thump with a soft click transient.
   kick: { d: 0.3, expr: "0.9*sin(2*PI*(95+160*exp(-t*40))*t)*exp(-t*18)+0.2*(2*random(1)-1)*exp(-t*90)", af: "lowpass=f=3000" },
   // Crowd/cheer: band-limited noise swell (voices-like formant band), rises then settles.
+  // Ship alert: two-tone square-ish beeps.
+  alert: { d: 1.2, expr: "0.32*sgn(sin(2*PI*(if(lt(mod(t,0.3),0.15),880,660))*t))*lt(mod(t,0.3),0.24)", af: "lowpass=f=4000" },
+  // Radio static: crackling band-passed noise with dropouts.
+  static: { d: 2.0, expr: "(2*random(1)-1)*(0.25+0.25*gt(random(2),0.93))*(0.6+0.4*sin(2*PI*3*t))", af: "highpass=f=900,lowpass=f=5200" },
+  // Power-down: falling tone with a sub drop.
+  powerdown: { d: 2.4, expr: "0.4*sin(2*PI*(420*exp(-t*1.4)+28)*t)*exp(-t*0.9)+0.3*sin(2*PI*45*t)*exp(-t*1.6)", af: "lowpass=f=2500" },
+  // Heartbeat: lub-dub.
+  heartbeat: { d: 0.9, expr: "0.9*sin(2*PI*52*t)*exp(-t*22)+0.7*sin(2*PI*48*(t-0.24))*exp(-(t-0.24)*24)*gte(t,0.24)", af: "lowpass=f=300" },
   crowd: { d: 3.2, expr: "(2*random(1)-1)*(0.15+0.5*sin(PI*clip(t/3.2,0,1)))*(0.8+0.2*sin(2*PI*5.3*t))", af: "bandpass=f=1100:width_type=o:w=2.2,lowpass=f=4500" },
 };
 

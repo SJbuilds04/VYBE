@@ -213,7 +213,9 @@ export function parseInvocation(input, { cwd = process.cwd() } = {}) {
   const qualityKey = (flags.quality || "high").toLowerCase();
   if (!QUALITY[qualityKey]) throw new Error(`Unknown --quality "${flags.quality}". Use draft, standard or high.`);
 
-  const voiceRequestedInText = /\b(narrat\w*|voice[- ]?over|voiceover|voiced|narrator|spoken)\b/i.test(prompt) && !/\bno (narration|voice)/i.test(prompt);
+  // Narration words, or a screenplay with dialogue lines ("SHIP AI: Warning...").
+  const hasDialogue = /(^|[\s.!?])[A-Z][A-Z0-9 ]{1,24}:\s*["“]?[A-Z]/.test(prompt);
+  const voiceRequestedInText = (/\b(narrat\w*|voice[- ]?over|voiceover|voiced|narrator|spoken)\b/i.test(prompt) || hasDialogue) && !/\bno (narration|voice)/i.test(prompt);
   let voice = { enabled: false, provider: "auto", voiceId: flags["voice-id"] || null, source: "default" };
   if (flags["no-voice"]) voice = { ...voice, enabled: false, source: "flag" };
   else if (flags.voice) {

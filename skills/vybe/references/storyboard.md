@@ -28,6 +28,11 @@ and `vybe qc` samples frames at its scene midpoints and cuts.
       "music": "Low drone, no percussion",
       "narration": "Some things pull so hard that not even light gets away.",  // required (string) when voice is on
       "narrationOffset": 0.3,              // optional: when the line starts inside the scene
+      "voice": "bm_george",                // optional: per-line Kokoro voice (a different character)
+      "voiceFx": "radio",                  // optional: ai | radio | helmet character treatment
+      "voiceSpeed": 0.85,                  // optional: per-line delivery speed
+      "musicLevel": 0.3,                   // optional: music bed level for this scene (0 = silence)
+      "black": true,                       // optional: an intentional black frame (cut to black) — QC allows it
       "technique": ["three.js", "gsap"]    // optional: helps composition-brief.md
     }
   ]

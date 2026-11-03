@@ -99,7 +99,15 @@ export function qcCommand(projectDir, { video } = {}) {
   // Head/tail black is tolerated as a fade, but not when black is most of the film.
   const blackTotal = black.reduce((n, b) => n + b.duration, 0);
   if (duration && blackTotal / duration > 0.5) failures.push(`Video is mostly black (${blackTotal.toFixed(1)}s of ${duration.toFixed(1)}s) — likely a failed WebGL/canvas layer or missing scenes.`);
-  for (const b of black) {
+  // Scenes the storyboard marks "black": true (a cut to black) are intentional.
+  const sbBlack = (() => {
+    const f = path.join(projectDir, "storyboard.json");
+    const sb = fs.existsSync(f) ? readJson(f, null) : null;
+    let t = 0;
+    return (sb?.scenes || []).flatMap((s) => { const w = { start: t, end: (t += Number(s.duration)) }; return s.black ? [w] : []; });
+  })();
+  const intended = (b) => sbBlack.some((w) => b.start >= w.start - 0.15 && b.end <= w.end + 0.15);
+  for (const b of black.filter((x) => !intended(x))) {
     const atEdge = b.start < 0.6 || b.end > duration - 1.2;
     if (!atEdge && b.duration >= 0.4) failures.push(`Unintended black frames ${b.start.toFixed(2)}–${b.end.toFixed(2)}s (${b.duration.toFixed(2)}s).`);
     else if (b.duration >= 1.0) warnings.push(`Long black ${atEdge ? "head/tail" : "segment"} ${b.start.toFixed(2)}–${b.end.toFixed(2)}s.`);
