@@ -131,7 +131,7 @@ export function initProject(brief, { template, stylePreset, skipHyperframesInit 
   }
 
   const state = {
-    vybe: "1.0.0",
+    vybe: "1.1.0",
     createdAt: new Date().toISOString(),
     brief,
     template: tpl,

@@ -1,6 +1,6 @@
 {
   "name": "vybe-skill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An autonomous AI motion graphics skill that turns natural-language prompts into cinematic, animated and professionally rendered videos using HyperFrames and modern creative technologies.",
   "private": true,
   "type": "module",

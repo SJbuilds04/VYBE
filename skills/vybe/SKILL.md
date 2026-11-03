@@ -1,11 +1,11 @@
 ---
 name: vybe
-description: Autonomous motion graphics studio. Turns one natural-language prompt into a storyboarded, animated, sound-designed, quality-checked MP4 rendered with HyperFrames (HTML + GSAP + Three.js + FFmpeg). Use when someone says "/vybe", or asks to create, make, generate or animate a video, motion graphic, explainer, product ad, logo reveal, social reel, kinetic typography, documentary intro, cinematic teaser, a launch video from their project, or wants a still image animated. Handles creative direction, storyboard, assets, composition, voiceover, music, SFX, captions, rendering and visual QC without the user writing animation code.
+description: Autonomous motion graphics studio. Turns one natural-language prompt into a storyboarded, animated, sound-designed, quality-checked MP4 rendered with HyperFrames (HTML + GSAP + Three.js + FFmpeg). Use when someone says "/vybe", or asks to create, make, generate or animate a video, motion graphic, explainer, product ad, logo reveal, social reel, kinetic typography, documentary intro, cinematic teaser, a launch video from their project, a multi-episode 3D series or story with recurring characters, or wants a still image animated. Handles creative direction, storyboard, assets, composition, voiceover, music, SFX, captions, rendering and visual QC without the user writing animation code.
 license: MIT
 compatibility: Requires Node.js 22+, FFmpeg on PATH, and the HyperFrames CLI (npx hyperframes). Works in Claude Code, Codex CLI, Cursor, OpenCode and other Agent Skills clients. Paid providers (HeyGen, ElevenLabs, Gemini, Runway, Luma, Kling) are optional.
 metadata:
   author: SJ BUILDS
-  version: "1.0.0"
+  version: "1.1.0"
   tagline: From imagination to motion.
 ---
 
@@ -119,6 +119,9 @@ brief replaces it, and `/vybe` without `--review` is the user's approval to rend
   larger video, place them as media and animate their wrappers.
 - **Music file supplied** → beat-sync the cut (`npx hyperframes beats`), music sets the length.
 - **Very short (≤10s), unnarrated, motion is the message** → logo-reveal or kinetic-typography energy, one idea.
+- **A series** (several episodes, parts or a season sharing characters, sets or a look) →
+  `vybe series init` creates one shared 3D world plus one project per episode; follow
+  `references/series.md`. Add later episodes with `vybe series add`.
 
 ## Creative standard (apply in every stage)
 

@@ -121,3 +121,10 @@ V finalize P      # exports/final.mp4 (loudness -14 LUFS, video untouched), thum
 
 Write `P/share-copy.md` if `--social` was given. Finish with the delivery report
 (see SKILL.md). Optionally offer `cd C && npx hyperframes preview` for editing.
+
+## Series (several episodes sharing a world)
+
+When the request is a season, numbered episodes or a recurring cast, scaffold with
+`V series init --name "<show>" --episodes N --kits <kits> -- <invocation>` instead of `V init`,
+then follow `references/series.md`. Each episode is a normal project for stages 3 and 6–9.
+Its composition comes from `V series build <series-dir> N`.

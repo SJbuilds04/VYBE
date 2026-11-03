@@ -13,7 +13,8 @@ import { generateMusic } from "./lib/music.mjs";
 import { qcCommand } from "./lib/qc.mjs";
 import { finalizeCommand } from "./lib/finalize.mjs";
 import { renderCommand } from "./lib/render.mjs";
-import { readJson } from "./lib/util.mjs";
+import { readJson, slugify } from "./lib/util.mjs";
+import { initSeries, addEpisode, buildSeries } from "./lib/series.mjs";
 
 const HELP = `vybe — VYBE engine (SJ BUILDS)
 
@@ -34,6 +35,13 @@ Usage: node vybe.mjs <command> [options]
                                      Technical QC + frame extraction + report
   finalize <project>                 Exports: final.mp4, thumbnail.png, captions.srt
   stage <project> <stage> <status>   Record pipeline progress in vybe.json
+
+  series init [--name <n>] [--episodes n] [--kits characters,space,places] [--title "LINE|LINE"] -- <invocation...>
+                                     A series: one shared 3D world (engine/), one file per
+                                     episode (episodes/epNN.js), one VYBE project per episode
+  series add <series-dir> [--title <t>]
+                                     Add the next episode (starter file + project)
+  series build <series-dir> [n...]   Compile episodes into their projects' composition/
 
 Exit codes: 0 ok · 1 failure/QC fail · 2 usage error.`;
 
@@ -159,6 +167,35 @@ async function main(argv) {
       const state = setStage(path.resolve(project), stage, status);
       console.log(JSON.stringify(state.stages, null, 2));
       return 0;
+    }
+
+    case "series": {
+      const sub = args.shift();
+      const skip = takeFlag(args, "skip-hyperframes-init", false);
+      if (sub === "init") {
+        const name = takeFlag(args, "name");
+        const episodes = Number(takeFlag(args, "episodes") || 1);
+        const kits = (takeFlag(args, "kits") || "characters").split(",").map((k) => k.trim()).filter(Boolean);
+        const title = takeFlag(args, "title");
+        const { brief, warnings } = parseInvocation(afterDashDash(args));
+        if (name) brief.name = slugify(name);
+        const r = initSeries(brief, { episodes, kits, title: title ? title.split("|") : undefined, skipHyperframesInit: skip });
+        console.log(JSON.stringify({ series: r.seriesDir, name: r.name, format: r.format, kits: r.kits, episodes: r.episodes, warnings }, null, 2));
+        return 0;
+      }
+      if (sub === "add") {
+        const dir = args.shift();
+        if (!dir) throw usage("series add <series-dir> [--title <t>]");
+        console.log(JSON.stringify(addEpisode(path.resolve(dir), { title: takeFlag(args, "title"), skipHyperframesInit: skip }), null, 2));
+        return 0;
+      }
+      if (sub === "build") {
+        const dir = args.shift();
+        if (!dir) throw usage("series build <series-dir> [n...]");
+        console.log(JSON.stringify(buildSeries(path.resolve(dir), args.map(Number).filter(Boolean)), null, 2));
+        return 0;
+      }
+      throw usage("series init|add|build");
     }
 
     default:
