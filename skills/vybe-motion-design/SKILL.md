@@ -1,6 +1,6 @@
 ---
 name: vybe-motion-design
-description: Motion design craft for VYBE / HyperFrames videos — animation principles, easing and timing, choreography and staggering, scene transitions, camera movement, and visual effects (blur, glow, masks, grain, light leaks), written as seek-safe GSAP recipes. Use when designing or fixing how things move in a video: entrances, exits, transitions between scenes, camera moves, rhythm, or when motion feels generic, floaty, stiff or repetitive.
+description: Motion design craft for VYBE / HyperFrames videos — animation principles, easing and timing, choreography and staggering, scene transitions, camera movement, and visual effects (blur, glow, masks, grain, light leaks), written as seek-safe GSAP recipes. Use when designing or fixing how things move in a video — entrances, exits, transitions between scenes, camera moves, rhythm, or when motion feels generic, floaty, stiff or repetitive.
 license: MIT
 metadata:
   author: SJ BUILDS

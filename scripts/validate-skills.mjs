@@ -47,6 +47,12 @@ export function validateSkillDir(dir) {
   const fm = parseFrontmatter(text);
   if (!fm) return { errs: [`${name}: SKILL.md has no YAML frontmatter`], warns };
   const d = fm.data;
+  // Strict YAML: an unquoted value may not contain ": " or " #" (spec-compliant
+  // parsers such as the Skills CLI reject the whole skill).
+  for (const line of text.match(/^---\r?\n([\s\S]*?)\r?\n---/)[1].split(/\r?\n/)) {
+    const kv = line.match(/^([A-Za-z0-9_-]+):\s+(.+)$/);
+    if (kv && !/^["'>|]/.test(kv[2]) && /: | #/.test(kv[2])) errs.push(`${name}: frontmatter "${kv[1]}" contains ": " or " #" — quote the value or rephrase (invalid YAML)`);
+  }
   if (!d.name) errs.push(`${name}: frontmatter.name is required`);
   else {
     if (d.name !== name) errs.push(`${name}: name "${d.name}" must match its directory`);
