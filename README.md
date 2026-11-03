@@ -25,10 +25,10 @@
 
 <br>
 
-<img src="docs/media/the-last-signal-trailer.gif" width="300" alt="Trailer for The Last Signal, a 5-episode 3D sci-fi series made with VYBE">
+<img src="docs/media/vybe-showcase.gif" width="100%" alt="VYBE showcase: a ship streaks to Earth, the city sky tears open, a hero and his hologram run, an audio engine pulses, a machine burns red, a fleet lights up, VYBE title">
 
-**THE LAST SIGNAL — Season 1** · 5 episodes · 9:16 · 3D · made by VYBE from a pasted script
-<br>[▶ Watch Episode 1 with sound](docs/media/the-last-signal-ep01.mp4) · [See the whole season](#made-with-vybe)
+<sub>This trailer was made by VYBE with its own series engine. It's 19 seconds of 16:9 Three.js, with a procedural score and synthesized sound effects.
+[▶ Watch with sound](docs/media/vybe-showcase.mp4)</sub>
 
 <br>
 
@@ -49,7 +49,12 @@ from local Kokoro, music and sound effects from VYBE's procedural synth, and no 
 
 ### The Last Signal: Season 1
 
-<img src="docs/media/the-last-signal-season.jpg" alt="One frame from each of the five episodes of The Last Signal">
+<table>
+<tr>
+<td width="32%" align="center"><img src="docs/media/the-last-signal-trailer.gif" width="100%" alt="Trailer for The Last Signal, a 5-episode 3D sci-fi series made with VYBE"><br><sub>Season 1 trailer · 9:16</sub></td>
+<td width="68%"><img src="docs/media/the-last-signal-season.jpg" width="100%" alt="One frame from each of the five episodes of The Last Signal"><br><sub>One frame from each episode</sub></td>
+</tr>
+</table>
 
 | Ep | Title | What happens |
 | --- | --- | --- |
